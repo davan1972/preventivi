@@ -50,6 +50,8 @@
         .btn-submit::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent); transition: left .5s; }
         .btn-submit:hover::before { left: 100%; }
         .btn-submit:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(59, 130, 246, .45); }
+        .btn-reset { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; padding: 18px 40px; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all .3s ease; font-family: 'Outfit', sans-serif; width: 100%; margin-top: 15px; box-shadow: 0 8px 24px rgba(239, 68, 68, .3); }
+        .btn-reset:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(239, 68, 68, .4); }
         #risultato { margin-top: 45px; padding: 40px; background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: #fff; border-radius: 24px; display: none; box-shadow: 0 20px 60px rgba(59, 130, 246, .4); }
         #risultato h2 { font-family: 'DM Serif Display', serif; font-size: 2.4rem; margin-bottom: 22px; }
         .hidden { display: none; }
@@ -141,6 +143,7 @@
                 </div>
             </div>
             <button type="submit" class="btn-submit">Genera Preventivo</button>
+            <button type="button" id="btnReset" class="btn-reset" onclick="resetPreventivo()">🔄 Nuovo Preventivo</button>
         </form>
         <div id="risultato"></div>
         <footer><p>Sistema di preventivazione automatica - Facile Salire 2026</p></footer>
@@ -512,6 +515,34 @@
         document.querySelectorAll('input[name="modello"]').forEach(r => {
             r.addEventListener("change", function() { generaOpzioni(this.value); });
         });
+
+        function resetPreventivo() {
+            // Reset form
+            document.getElementById("preventivoForm").reset();
+            
+            // Nascondi modelli
+            document.getElementById("modelliPoltroncina").classList.add("hidden");
+            document.getElementById("modelliPedana").classList.add("hidden");
+            
+            // Svuota opzioni
+            document.getElementById("opzioniContainer").innerHTML = "";
+            
+            // Nascondi risultato
+            document.getElementById("risultato").style.display = "none";
+            
+            // Reset prezzi
+            document.getElementById("prezzoListino").textContent = "€ 0,00";
+            document.getElementById("prezzoListinoIva").textContent = "(IVA incl. € 0,00)";
+            document.getElementById("prezzoFinale").textContent = "€ 0,00";
+            document.getElementById("prezzoFinaleIva").textContent = "(IVA incl. € 0,00)";
+            
+            // Reset variabili globali
+            opzioniSalvate = { opzioniCheckbox: [], opzioniNumeriche: [] };
+            datiPreventivoSalvati = {};
+            
+            // Scroll top
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
 
         document.getElementById("sconto").addEventListener("input", calcolaTotale);
 
