@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggiorna Listini Montascale</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .upload-area {
+            border: 3px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .file-info {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .result.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #9ae6b4;
+        }
+
+        .result.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #fc8181;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .progress {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress.show {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #edf2f7;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .step-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .step-list li {
+            margin: 8px 0;
+            color: #4a5568;
+        }
+
+        .step-list li.done {
+            color: #38a169;
+        }
+
+        .step-list li.done::before {
+            content: '✓ ';
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Aggiorna Listini</h1>
+        <p class="subtitle">Carica i file Excel aggiornati</p>
+
+        <label class="file-label">File Poltroncine (.xlsx)</label>
+        <div class="upload-area" id="uploadPoltroncine" onclick="document.getElementById('filePoltroncine').click()">
+            <div class="upload-icon">📊</div>
+            <p>Clicca o trascina il file qui</p>
+            <small>LISTINI_2026_FACILE_SALIRE_-_MS_POLTRONCINE.xlsx</small>
+        </div>
+        <input type="file" id="filePoltroncine" accept=".xlsx">
+        <div class="file-info" id="infoPoltroncine"></div>
+
+        <label class="file-label" style="margin-top: 30px;">File Pedane (.xlsx)</label>
+        <div class="upload-area" id="uploadPedane" onclick="document.getElementById('filePedane').click()">
+            <div class="upload-icon">📊</div>
+            <p>Clicca o trascina il file qui</p>
+            <small>LISTINI_2026_FACILE_SALIRE_-_MS_PEDANE.xlsx</small>
+        </div>
+        <input type="file" id="filePedane" accept=".xlsx">
+        <div class="file-info" id="infoPedane"></div>
+
+        <button class="btn" id="btnElabora" disabled>Elabora e Aggiorna HTML</button>
+
+        <div class="progress" id="progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <ul class="step-list" id="stepList"></ul>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let filePoltroncine = null;
+        let filePedane = null;
+
+        // Gestione upload Poltroncine
+        document.getElementById('filePoltroncine').addEventListener('change', function(e) {
+            filePoltroncine = e.target.files[0];
+            if (filePoltroncine) {
+                document.getElementById('infoPoltroncine').innerHTML = `✓ ${filePoltroncine.name} (${(filePoltroncine.size / 1024).toFixed(1)} KB)`;
+                document.getElementById('infoPoltroncine').classList.add('show');
+            }
+            checkFiles();
+        });
+
+        // Gestione upload Pedane
+        document.getElementById('filePedane').addEventListener('change', function(e) {
+            filePedane = e.target.files[0];
+            if (filePedane) {
+                document.getElementById('infoPedane').innerHTML = `✓ ${filePedane.name} (${(filePedane.size / 1024).toFixed(1)} KB)`;
+                document.getElementById('infoPedane').classList.add('show');
+            }
+            checkFiles();
+        });
+
+        // Drag & drop
+        ['uploadPoltroncine', 'uploadPedane'].forEach(id => {
+            const area = document.getElementById(id);
+            const fileInput = id === 'uploadPoltroncine' ? 'filePoltroncine' : 'filePedane';
+
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('dragover');
+            });
+
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('dragover');
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    document.getElementById(fileInput).files = files;
+                    document.getElementById(fileInput).dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        function checkFiles() {
+            document.getElementById('btnElabora').disabled = !(filePoltroncine && filePedane);
+        }
+
+        // Elabora file
+        document.getElementById('btnElabora').addEventListener('click', async function() {
+            const btn = this;
+            btn.disabled = true;
+            const progress = document.getElementById('progress');
+            const result = document.getElementById('result');
+            const stepList = document.getElementById('stepList');
+            const progressFill = document.getElementById('progressFill');
+
+            progress.classList.add('show');
+            result.classList.remove('show');
+            stepList.innerHTML = '';
+
+            try {
+                // Funzione per aggiungere step
+                const addStep = (text, done = false) => {
+                    const li = document.createElement('li');
+                    li.textContent = text;
+                    if (done) li.classList.add('done');
+                    stepList.appendChild(li);
+                    return li;
+                };
+
+                // Step 1: Lettura file
+                addStep('Lettura file Excel...', false);
+                progressFill.style.width = '20%';
+
+                const modelliPrezzi = {};
+
+                // Leggi Poltroncine
+                const dataPoltroncine = await filePoltroncine.arrayBuffer();
+                const wbPoltroncine = XLSX.read(dataPoltroncine);
+                wbPoltroncine.SheetNames.forEach(sheetName => {
+                    const ws = wbPoltroncine.Sheets[sheetName];
+                    const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                    modelliPrezzi[sheetName] = estraiPrezzi(data);
+                });
+
+                stepList.lastChild.classList.add('done');
+                addStep('Lettura file Pedane...', false);
+                progressFill.style.width = '40%';
+
+                // Leggi Pedane
+                const dataPedane = await filePedane.arrayBuffer();
+                const wbPedane = XLSX.read(dataPedane);
+                wbPedane.SheetNames.forEach(sheetName => {
+                    const ws = wbPedane.Sheets[sheetName];
+                    const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                    modelliPrezzi[sheetName] = estraiPrezzi(data);
+                });
+
+                stepList.lastChild.classList.add('done');
+                addStep('Generazione codice JavaScript...', true);
+                progressFill.style.width = '60%';
+
+                // Genera JavaScript
+                const jsCode = `const prezziModelli = ${JSON.stringify(modelliPrezzi, null, 12)};`;
+
+                addStep('Download HTML aggiornato...', true);
+                progressFill.style.width = '80%';
+
+                // Scarica HTML (simulato - in realtà mostreremo il codice)
+                const blob = new Blob([jsCode], { type: 'text/javascript' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'prezzi_aggiornati.js';
+                a.click();
+
+                progressFill.style.width = '100%';
+                addStep('Completato!', true);
+
+                setTimeout(() => {
+                    result.className = 'result success show';
+                    result.innerHTML = `
+                        <h3>✅ Elaborazione completata!</h3>
+                        <p style="margin-top: 10px;">File "prezzi_aggiornati.js" scaricato.</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            <strong>Prossimi passi:</strong><br>
+                            1. Apri preventivi-montascale-v2.html<br>
+                            2. Cerca la sezione "const prezziModelli"<br>
+                            3. Sostituisci con il contenuto di prezzi_aggiornati.js<br>
+                            4. Salva e carica su GitHub
+                        </p>
+                    `;
+                    btn.disabled = false;
+                }, 500);
+
+            } catch (error) {
+                result.className = 'result error show';
+                result.innerHTML = `<h3>⚠ Errore</h3><p>${error.message}</p>`;
+                btn.disabled = false;
+            }
+        });
+
+        // Funzione estrazione prezzi (semplificata)
+        function estraiPrezzi(data) {
+            const prezzi = {};
+            
+            // Prezzo base (riga 6, colonna D = index 3)
+            if (data[5] && data[5][3]) {
+                prezzi.base = parseFloat(data[5][3]) || 0;
+            }
+
+            // Scansiona righe per opzioni
+            for (let i = 6; i < Math.min(data.length, 60); i++) {
+                const row = data[i];
+                if (!row) continue;
+
+                const desc = row[1]; // Colonna B
+                const prezzo = row[3]; // Colonna D
+
+                if (desc && prezzo && !isNaN(prezzo)) {
+                    // Mappatura semplificata
+                    const descLower = desc.toLowerCase();
+                    
+                    if (descLower.includes('estensione guida')) prezzi.opt_estensione_guida = parseFloat(prezzo);
+                    if (descLower.includes('guida tagliata')) prezzi.opt_guida_tagliata = parseFloat(prezzo);
+                    if (descLower.includes('tappeti')) prezzi.opt_tappeti = parseFloat(prezzo);
+                    if (descLower.includes('guida al mt')) prezzi.metri_guida = parseFloat(prezzo);
+                    if (descLower.includes('ogni alzata')) prezzi.alzate = parseFloat(prezzo);
+                    // ... aggiungi altri mapping necessari
+                }
+            }
+
+            return prezzi;
+        }
+    </script>
+</body>
+</html>
