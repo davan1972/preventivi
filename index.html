@@ -639,7 +639,7 @@
 
     <script>
         // Configurazione n8n webhook
-        const N8N_WEBHOOK_URL = 'https://n8n.srv1137812.hstgr.cloud/webhook-test/preventivo-montascale';
+        const N8N_WEBHOOK_URL = 'https://TUO_N8N_URL.app.n8n.cloud/webhook/preventivo-montascale';
 
         // Mappa prezzi per modello (estratti da Excel)
         const prezziModelli = {
@@ -1105,6 +1105,13 @@
             const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
 
+            // Aggiungi prezzi calcolati
+            const prezzoListinoText = document.getElementById('prezzoListino').textContent;
+            const prezzoFinaleText = document.getElementById('prezzoFinale').textContent;
+            
+            data.prezzoListino = parseFloat(prezzoListinoText.replace('€ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+            data.prezzoFinale = parseFloat(prezzoFinaleText.replace('€ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+
             // Mostra loading
             const risultato = document.getElementById('risultato');
             risultato.style.display = 'block';
@@ -1135,21 +1142,12 @@
                 risultato.innerHTML = `
                     <h2>✓ Preventivo Generato</h2>
                     <p style="margin: 20px 0;">Il preventivo è stato creato con successo.</p>
-                    ${result.pdf_url ? `
-                        <a href="${result.pdf_url}" 
-                           style="display: inline-block; 
-                                  background: white; 
-                                  color: var(--primary); 
-                                  padding: 14px 32px; 
-                                  border-radius: 8px; 
-                                  text-decoration: none; 
-                                  font-weight: 600;
-                                  margin-top: 10px;">
-                            Scarica PDF
-                        </a>
-                    ` : ''}
-                    <p style="margin-top: 20px; font-size: 0.95rem; opacity: 0.9;">
-                        Preventivo n. ${result.numero_preventivo || 'N/A'}
+                    <p style="font-size: 0.95rem; opacity: 0.9;">
+                        <strong>Preventivo n. ${result.numero_preventivo || 'N/A'}</strong><br>
+                        Totale IVA inclusa: € ${result.totale || '0.00'}
+                    </p>
+                    <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+                        ${result.message || 'Preventivo salvato nello storico'}
                     </p>
                 `;
 
