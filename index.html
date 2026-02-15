@@ -47,8 +47,6 @@
         .option-category { margin-bottom: 38px; padding: 30px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 18px; border: 1px solid var(--border); }
         .category-title { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: var(--primary); margin-bottom: 22px; padding-bottom: 14px; border-bottom: 3px solid var(--accent); }
         .btn-submit { background: linear-gradient(135deg, #0ea5e9, #3b82f6, #6366f1); color: #fff; padding: 22px 55px; border: none; border-radius: 16px; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: all .4s ease; font-family: 'Outfit', sans-serif; width: 100%; margin-top: 28px; box-shadow: 0 12px 32px rgba(59, 130, 246, .35); position: relative; overflow: hidden; }
-        .btn-submit::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent); transition: left .5s; }
-        .btn-submit:hover::before { left: 100%; }
         .btn-submit:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(59, 130, 246, .45); }
         .btn-reset { background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; padding: 18px 40px; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all .3s ease; font-family: 'Outfit', sans-serif; width: 100%; margin-top: 15px; box-shadow: 0 8px 24px rgba(239, 68, 68, .3); }
         .btn-reset:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(239, 68, 68, .4); }
@@ -102,7 +100,7 @@
                     <div class="radio-option"><input type="radio" name="modello" value="Facile Step SRC" id="src"><label for="src">Facile Step SRC (rettilineo)</label></div>
                     <div class="radio-option"><input type="radio" name="modello" value="Facile Step SSC" id="ssc"><label for="ssc">Facile Step SSC (curvilineo)</label></div>
                     <div class="radio-option"><input type="radio" name="modello" value="Facile Step X3" id="x3"><label for="x3">Facile Step X3 (rettilineo)</label></div>
-                    <div class="radio-option"><input type="radio" name="modello" value="Facile Step ARTIRA" id="artira"><label for="artira">Facile Step ARTIRA</label></div>
+                    <div class="radio-option"><input type="radio" name="modello" value="Facile Step ARTIRA" id="artira"><label for="artira">Facile Step ARTIRA (curvilineo)</label></div>
                 </div>
             </div>
             <div class="form-section">
@@ -143,32 +141,79 @@
                 </div>
             </div>
             <button type="submit" class="btn-submit">Genera Preventivo</button>
-            <button type="button" id="btnReset" class="btn-reset" onclick="resetPreventivo()">🔄 Nuovo Preventivo</button>
+            <button type="button" class="btn-reset" onclick="resetPreventivo()">🔄 Nuovo Preventivo</button>
         </form>
         <div id="risultato"></div>
         <footer><p>Sistema di preventivazione automatica - Facile Salire 2026</p></footer>
     </div>
 
     <script>
-        // VARIABILE GLOBALE per salvare le opzioni al momento del submit
         let opzioniSalvate = { opzioniCheckbox: [], opzioniNumeriche: [] };
         let datiPreventivoSalvati = {};
 
         const prezziModelli = {
+            // POLTRONCINE
             "Facile Sprint 1100": { base: 4508, opt_estensione_guida: 429.8, opt_guida_tagliata: 100.8, opt_guida_ribaltabile: 553, opt_tappeti: 82.6, opt_guida_scorrevole_47: 1349.6, opt_guida_scorrevole_705: 1776.6, opt_zero_intrusion_47: 288.4, opt_zero_intrusion_705: 373.8, opt_rotazione_auto: 1054.2, opt_pedana_motor: 1036, opt_motor_completo: 1573.6, opt_one_touch: 603.2 },
             "Facile Elegance 1000": { base: 5150, opt_estensione_guida: 335.4, opt_guida_tagliata: 97.5, opt_guida_ribaltabile: 770.9, opt_tappeti: 54.6, opt_guida_ribaltabile_motor: 1110.2, opt_versione_esterni: 579.8, opt_sedile_perch: 232.7, opt_distanziale_singolo: 104, opt_distanziale_doppio: 157.3, opt_cintura_velcro: 124.8, opt_body_harness: 596.7, opt_heavy_duty_xl: 380.9, opt_heavy_duty_xxl: 1648.4, opt_rotazione_auto: 512.2, opt_rotazione_2dir: 683.8, opt_pedana_motor: 495.3, opt_motor_completo: 1006.2, opt_motor_completo_2dir: 1177.8, opt_one_touch: 603.2, opt_smontaggio: 300 },
             "Facile Superior H4000": { base: 5985.2, metri_guida: 308.75, opt_sedile_perch: 546, opt_sedile_esterni: 286, opt_sedile_style: 286, opt_bracciolo_corto: 130, opt_distanziale_singolo: 101.4, opt_distanziale_doppio: 156, opt_cintura_velcro: 123.5, opt_body_harness: 592.8, curve_90_qty: 673.4, punti_ricarica_qty: 127.4, metri_esterni: 45.5, fermate_intermedie_qty: 127.4, opt_overrun: 358.8, opt_dropnose: 371.8, opt_guida_ribaltabile_motor: 1638, opt_heavy_duty_160: 897, opt_tappeti: 54.6, opt_colore_speciale: 1150.5, opt_versione_esterni: 1524.9, opt_piastre_muro: 80.6, opt_conversion_kit: 66.3, opt_rotazione_auto: 496.6, opt_pedana_motor: 496.6, opt_motor_completo: 980.2, radiocomandi_qty: 113.1, opt_one_touch: 603.2 },
             "Facile Graziosa Freecurve": { base: 7501.8, metri_guida: 436.8, curve_90_qty: 741, punti_ricarica_qty: 140.4, attacchi_muro_qty: 88.4, radiocomandi_qty: 124.8, opt_elegance_seat: 315.6, opt_alliance_seat: 491.4, opt_active_seat: 648.7, opt_body_harness_4p: 648.7, opt_guida_ribaltabile_motor: 1803.9, opt_colore_speciale: 1267.5, opt_solo_guida: 2119.5, opt_rotazione_auto: 546, opt_rotazione_2dir: 720.2, opt_pedana_illuminato: 546, opt_batteria_extra: 140.4, opt_batteria_ultra: 218.4, opt_kit_ripetitore: 234 },
             "Infinity Curvilineo Bespoke": { base: 7150, metri_guida: 280.8, metri_guida_hd: 312, curve_90_qty: 468, curve_180_qty: 624, curve_speciali_qty: 624, fermate_intermedie_qty: 156, punti_ricarica_qty: 124.8, telecomandi_qty: 93.6, opt_motor_hd: 1092, opt_seduta_regolabile: 218.4, opt_sedile_motor: 405.6, opt_dual_control: 218.4, opt_partenza_drop: 249.6, opt_arrivo_orizzontale: 249.6, opt_fissaggio_muro: 93.6, opt_coprigambe: 93.6, opt_colore_nero: 468, opt_colore_marrone: 468 },
-            "Facile Step SRC": { base: 8287.5, alzate: 75, metri_guida_extra: 225, colonnini_qty: 120, fermate_intermedie_qty: 450, opt_ped_esterni: 30, opt_ped_acustico: 225 },
-            "Facile Step SSC": { base: 10062, alzate: 78, metri_guida_extra: 234, curve_90_qty: 702, curve_180_qty: 904.8, colonnini_qty: 124.8, fermate_intermedie_qty: 468, opt_ped_esterni: 31.2, opt_ped_acustico: 234, opt_curve_zincate: 78 },
-            "Facile Step X3": { base: 9245.6, alzate: 0, metri_guida_extra: 0, opt_piattaforma_640: 845, opt_piattaforma_800: 0, opt_piattaforma_1050: 469.3, opt_ped_esterni: 0 },
-            "Facile Step ARTIRA": { base: 12000, alzate: 85, metri_guida_extra: 250 }
+            // PEDANE - AGGIORNATE
+            "Facile Step SRC": {
+                base: 8287.5,
+                alzate: 75, metri_guida_extra: 225, guida_zincata_alzata: 30, guida_zincata_metro: 90, colonnini_qty: 120,
+                fermate_intermedie_qty: 450, opt_comando_acustico: 225, opt_pulsantiera_accomp: 300, opt_ribaltamento_motor: 675,
+                opt_colore_ral: 750, opt_strapuntino: 375, opt_piattaforma_700: 150, opt_piattaforma_speciale: 375,
+                opt_bandella_laterale: 375, opt_telo_copertura: 375, opt_soccorritore: 750, opt_smontaggio: 750
+            },
+            "Facile Step SSC": {
+                base: 10062,
+                alzate: 78, metri_guida_extra: 234, guida_zincata_alzata: 31.2, guida_zincata_metro: 93.6, colonnini_qty: 124.8,
+                curve_90_qty: 702, curve_180_qty: 904.8, curve_zincate_qty: 78,
+                fermate_intermedie_qty: 468, opt_soccorritore: 780, opt_comando_acustico: 234, opt_pulsantiera_accomp: 312,
+                opt_ribaltamento_motor: 702, opt_colore_ral: 780, opt_strapuntino: 390, opt_piattaforma_700: 156,
+                opt_piattaforma_speciale: 390, opt_bandella_laterale: 390, opt_telo_copertura: 390, opt_smontaggio: 1000
+            },
+            "Facile Step X3": {
+                base: 9245.6,
+                opt_guida_tagliata: 267.8,
+                opt_piattaforma_640: 845, opt_piattaforma_700: 0, opt_piattaforma_800: 0, opt_piattaforma_900: 0,
+                opt_piattaforma_1050: 469.3, opt_piattaforma_1220: 469.3, opt_piattaforma_speciale: 1553.5,
+                guida_1m_qty: 247, guida_1_4m_qty: 339.3, guida_1_8m_qty: 431.6, guida_2_2m_qty: 525.2,
+                kit_giunzione_qty: 79.3, fissaggi_inferiore_qty: 13, opt_fissaggio_gradino: 131,
+                opt_zincatura_pilastrini: 33.8, opt_verniciatura_sostegni: 46.8, opt_verniciatura_guida: 829.4, opt_verniciatura_veicolo: 1225.9,
+                pulsantiera_accomp_qty: 183.3, pilastrino_pulsantiera_qty: 243.1, tettuccio_pulsantiera_qty: 39,
+                tamponamenti_plexi_mt: 725.4, opt_seggiolino: 439.4,
+                opt_prolunga_dx: 161.2, opt_prolunga_sx: 161.2, opt_rampa_dx: 161.2, opt_rampa_sx: 161.2,
+                opt_telo_copertura: 312, opt_bloccaggio_solenoide: 343.2, opt_parapiede: 445.9, opt_imbarco_laterale: 2055.3,
+                opt_battery_18a: 210.6, chiavi_qty: 15.6, opt_one_touch: 603.2, opt_kit_spessori: 143, opt_smontaggio: 750
+            },
+            "Facile Step ARTIRA": {
+                base: 12906.6,
+                opt_piattaforma_640: 504, opt_piattaforma_700: 0, opt_piattaforma_800: 0, opt_piattaforma_900: 0,
+                opt_piattaforma_1050: 505.4, opt_piattaforma_1220: 505.4, opt_piattaforma_speciale: 2690.8, opt_piattaforma_chiocciola: 5486.6,
+                metri_binario: 571.2,
+                opt_partenza_ridotta: 546, opt_partenza_90: 546, opt_partenza_180: 702.8, opt_partenza_speciale: 905.8,
+                opt_arrivo_90: 546, opt_arrivo_180: 702.8, opt_arrivo_speciale: 905.8,
+                curve_180_qty: 702.8, curve_90_qty: 546, curve_pedoca_qty: 1887.2, curve_negativa_qty: 3190.6, curve_raggio_var_qty: 1785,
+                opt_base_orizzontale: 1010.8, eccedenza_orizzontale_mt: 240.8,
+                fissaggio_muro_mt: 63, fissaggio_contropiastre_mt: 96.6, fissaggio_gradino_mt: 229.6, fissaggio_zoccolo_mt: 474.6, fissaggio_occhio_mt: 474.6,
+                opt_traino_90: 546, opt_traino_180: 704.2, opt_traino_collo_oca: 721, opt_traino_speciale: 879.2, opt_standard_drive: 1960,
+                opt_tondino_paradito: 163.8, opt_verniciatura_guide: 126, opt_verniciatura_veicolo: 1353.8,
+                opt_pulsantiera_accomp: 197.4, stazioni_intermedie_qty: 396.2, tettuccio_pulsantiera_qty: 42, pilastrino_pulsantiera_qty: 261.8,
+                opt_alettoni_speciali: 474.6, opt_ramp_extension: 173.6, opt_short_ramp: 173.6, opt_imbarco_laterale: 1500,
+                tamponamenti_plexi_mt: 630, opt_parapiede: 546, opt_seggiolino: 474.6, opt_chiave_abilitazione: 378,
+                opt_bloccaggio_solenoide: 474.6, opt_telo_copertura: 259, opt_lampeggiante: 460.6,
+                opt_battery_compact: 3057.6, opt_battery_standard: 649.6, opt_battery_super: 5184.2,
+                chiavi_qty: 8.4, opt_portata_300_muro: 217, opt_portata_300_pilastrino: 399,
+                opt_kit_cavi_compact: 324.8, opt_kit_cavi_standard: 277.2, opt_smontaggio: 750
+            }
         };
 
         const opzioniPerModello = {
+            // POLTRONCINE (invariate)
             "Facile Sprint 1100": [
-                { id: "opt_estensione_guida", label: "Estensione guida di 2.35 mt", categoria: "guida" },
+                { id: "opt_estensione_guida", label: "Estensione guida 2.35 mt", categoria: "guida" },
                 { id: "opt_guida_tagliata", label: "Guida tagliata a misura", categoria: "guida" },
                 { id: "opt_guida_ribaltabile", label: "Guida ribaltabile manuale", categoria: "guida" },
                 { id: "opt_tappeti", label: "Tappeti", categoria: "guida" },
@@ -178,34 +223,34 @@
                 { id: "opt_zero_intrusion_705", label: "Kit zero intrusion 7.05 m", categoria: "guida" },
                 { id: "opt_rotazione_auto", label: "Rotazione seggiolino automatica", categoria: "motorizzate" },
                 { id: "opt_pedana_motor", label: "Poggiapiedi motorizzato", categoria: "motorizzate" },
-                { id: "opt_motor_completo", label: "Motorizzato completo (sedile e pedana)", categoria: "motorizzate" },
-                { id: "opt_one_touch", label: "One Touch Alert (SIM non inclusa)", categoria: "motorizzate" }
+                { id: "opt_motor_completo", label: "Motorizzato completo", categoria: "motorizzate" },
+                { id: "opt_one_touch", label: "One Touch Alert", categoria: "motorizzate" }
             ],
             "Facile Elegance 1000": [
-                { id: "opt_estensione_guida", label: "Estensione guida di 2.35 mt", categoria: "guida" },
+                { id: "opt_estensione_guida", label: "Estensione guida 2.35 mt", categoria: "guida" },
                 { id: "opt_guida_tagliata", label: "Guida tagliata a misura", categoria: "guida" },
                 { id: "opt_guida_ribaltabile", label: "Guida ribaltabile manuale", categoria: "guida" },
                 { id: "opt_tappeti", label: "Tappeti", categoria: "guida" },
                 { id: "opt_guida_ribaltabile_motor", label: "Guida ribaltabile motorizzata", categoria: "guida" },
                 { id: "opt_versione_esterni", label: "Versione per esterni", categoria: "guida" },
                 { id: "opt_sedile_perch", label: "Sedile Smart Perch", categoria: "seduta" },
-                { id: "opt_distanziale_singolo", label: "Distanziale per bracciolo singolo (+56mm)", categoria: "seduta" },
-                { id: "opt_distanziale_doppio", label: "Distanziale entrambi i braccioli (+102mm)", categoria: "seduta" },
-                { id: "opt_cintura_velcro", label: "Cintura in Velcro XXL", categoria: "seduta" },
+                { id: "opt_distanziale_singolo", label: "Distanziale singolo (+56mm)", categoria: "seduta" },
+                { id: "opt_distanziale_doppio", label: "Distanziale doppio (+102mm)", categoria: "seduta" },
+                { id: "opt_cintura_velcro", label: "Cintura Velcro XXL", categoria: "seduta" },
                 { id: "opt_body_harness", label: "Body harness", categoria: "seduta" },
                 { id: "opt_heavy_duty_xl", label: "Heavy Duty XL", categoria: "seduta" },
                 { id: "opt_heavy_duty_xxl", label: "Extra Heavy Duty XXL", categoria: "seduta" },
-                { id: "opt_rotazione_auto", label: "Rotazione seggiolino automatica", categoria: "motorizzate" },
-                { id: "opt_rotazione_2dir", label: "Rotazione automatica 2-direzioni", categoria: "motorizzate" },
+                { id: "opt_rotazione_auto", label: "Rotazione automatica", categoria: "motorizzate" },
+                { id: "opt_rotazione_2dir", label: "Rotazione 2-direzioni", categoria: "motorizzate" },
                 { id: "opt_pedana_motor", label: "Poggiapiedi motorizzato", categoria: "motorizzate" },
                 { id: "opt_motor_completo", label: "Motorizzato completo", categoria: "motorizzate" },
-                { id: "opt_motor_completo_2dir", label: "Motorizzato completo 2-direzioni", categoria: "motorizzate" },
+                { id: "opt_motor_completo_2dir", label: "Motorizzato 2-direzioni", categoria: "motorizzate" },
                 { id: "opt_one_touch", label: "One Touch Alert", categoria: "motorizzate" },
                 { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Superior H4000": [
                 { id: "metri_guida", label: "Metri guida", categoria: "input", tipo: "number", step: "0.1", placeholder: "7.5" },
-                { id: "curve_90_qty", label: "Curve a 90 gradi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_90_qty", label: "Curve a 90°", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "punti_ricarica_qty", label: "Punti ricarica aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "metri_esterni", label: "Metri guida esterni", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
                 { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
@@ -234,7 +279,7 @@
             ],
             "Facile Graziosa Freecurve": [
                 { id: "metri_guida", label: "Metri guida", categoria: "input", tipo: "number", step: "0.1", placeholder: "7.5" },
-                { id: "curve_90_qty", label: "Curve a 90 gradi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_90_qty", label: "Curve a 90°", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "punti_ricarica_qty", label: "Punti ricarica", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "attacchi_muro_qty", label: "Attacchi muro", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "radiocomandi_qty", label: "Radiocomandi", categoria: "input", tipo: "number", placeholder: "0" },
@@ -255,8 +300,8 @@
             "Infinity Curvilineo Bespoke": [
                 { id: "metri_guida", label: "Metri guida (oltre 5m)", categoria: "input", tipo: "number", step: "0.1", placeholder: "3" },
                 { id: "metri_guida_hd", label: "Metri guida HD", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
-                { id: "curve_90_qty", label: "Curve 90 gradi", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "curve_180_qty", label: "Curve 180 gradi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_90_qty", label: "Curve 90°", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_180_qty", label: "Curve 180°", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "curve_speciali_qty", label: "Curve speciali", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "punti_ricarica_qty", label: "Punti ricarica", categoria: "input", tipo: "number", placeholder: "0" },
@@ -272,63 +317,177 @@
                 { id: "opt_colore_nero", label: "Colore nero", categoria: "guida" },
                 { id: "opt_colore_marrone", label: "Colore marrone", categoria: "guida" }
             ],
+            // PEDANE - COMPLETE
             "Facile Step SRC": [
-                { id: "alzate", label: "Numero alzate", categoria: "input", tipo: "number", placeholder: "13" },
-                { id: "metri_guida_extra", label: "Metri guida extra", categoria: "input", tipo: "number", step: "0.1", placeholder: "2.5" },
-                { id: "colonnini_qty", label: "Colonnini piani", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "alzate", label: "Numero alzate scala", categoria: "input", tipo: "number", placeholder: "13" },
+                { id: "metri_guida_extra", label: "Metri guida extra", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "guida_zincata_alzata", label: "Guida zincata esterni (per alzata)", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "guida_zincata_metro", label: "Guida zincata esterni (per metro)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "colonnini_qty", label: "Colonnini chiamate piani", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "opt_ped_esterni", label: "Versione esterni", categoria: "opzioni" },
-                { id: "opt_ped_acustico", label: "Comando acustico", categoria: "opzioni" }
+                { id: "opt_comando_acustico", label: "Comando acustico luminoso", categoria: "accessori" },
+                { id: "opt_pulsantiera_accomp", label: "Pulsantiera accompagnatore", categoria: "accessori" },
+                { id: "opt_ribaltamento_motor", label: "Ribaltamento motorizzato piattaforma", categoria: "accessori" },
+                { id: "opt_colore_ral", label: "Colore RAL a scelta", categoria: "accessori" },
+                { id: "opt_strapuntino", label: "Strapuntino ribaltabile", categoria: "accessori" },
+                { id: "opt_piattaforma_700", label: "Piattaforma 840x700 mm", categoria: "piattaforma" },
+                { id: "opt_piattaforma_speciale", label: "Piattaforma speciale su misura", categoria: "piattaforma" },
+                { id: "opt_bandella_laterale", label: "Bandella laterale mobile", categoria: "accessori" },
+                { id: "opt_telo_copertura", label: "Telo di copertura (esterno)", categoria: "accessori" },
+                { id: "opt_soccorritore", label: "Gruppo soccorritore anti black-out", categoria: "accessori" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Step SSC": [
-                { id: "alzate", label: "Numero alzate", categoria: "input", tipo: "number", placeholder: "13" },
-                { id: "metri_guida_extra", label: "Metri guida extra", categoria: "input", tipo: "number", step: "0.1", placeholder: "2.5" },
-                { id: "curve_90_qty", label: "Curve 90 gradi", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "curve_180_qty", label: "Curve 180 gradi", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "colonnini_qty", label: "Colonnini piani", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "alzate", label: "Numero alzate scala", categoria: "input", tipo: "number", placeholder: "13" },
+                { id: "metri_guida_extra", label: "Metri guida extra", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "guida_zincata_alzata", label: "Guida zincata esterni (per alzata)", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "guida_zincata_metro", label: "Guida zincata esterni (per metro)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "colonnini_qty", label: "Colonnini chiamate piani", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_90_qty", label: "Curve a 90° (anche parcheggio)", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_180_qty", label: "Curve a 180°", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_zincate_qty", label: "Curve zincate (supplemento)", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "opt_ped_esterni", label: "Versione esterni", categoria: "opzioni" },
-                { id: "opt_ped_acustico", label: "Comando acustico", categoria: "opzioni" },
-                { id: "opt_curve_zincate", label: "Curve zincate", categoria: "opzioni" }
+                { id: "opt_soccorritore", label: "Gruppo soccorritore anti black-out", categoria: "accessori" },
+                { id: "opt_comando_acustico", label: "Comando acustico luminoso", categoria: "accessori" },
+                { id: "opt_pulsantiera_accomp", label: "Pulsantiera accompagnatore", categoria: "accessori" },
+                { id: "opt_ribaltamento_motor", label: "Ribaltamento motorizzato", categoria: "accessori" },
+                { id: "opt_colore_ral", label: "Colore RAL a richiesta", categoria: "accessori" },
+                { id: "opt_strapuntino", label: "Strapuntino ribaltabile", categoria: "accessori" },
+                { id: "opt_piattaforma_700", label: "Piattaforma 840x700 mm", categoria: "piattaforma" },
+                { id: "opt_piattaforma_speciale", label: "Piattaforma speciale", categoria: "piattaforma" },
+                { id: "opt_bandella_laterale", label: "Bandella laterale mobile", categoria: "accessori" },
+                { id: "opt_telo_copertura", label: "Telo di copertura", categoria: "accessori" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Step X3": [
-                { id: "alzate", label: "Numero alzate", categoria: "input", tipo: "number", placeholder: "13" },
-                { id: "metri_guida_extra", label: "Metri guida extra", categoria: "input", tipo: "number", step: "0.1", placeholder: "2.5" },
-                { id: "opt_piattaforma_640", label: "Piattaforma 640x680", categoria: "dimensioni" },
-                { id: "opt_piattaforma_800", label: "Piattaforma 800x800", categoria: "dimensioni" },
-                { id: "opt_piattaforma_1050", label: "Piattaforma 800x1050", categoria: "dimensioni" },
-                { id: "opt_ped_esterni", label: "Versione esterni", categoria: "opzioni" }
+                { id: "opt_guida_tagliata", label: "Guida tagliata/forata a misura", categoria: "guida" },
+                { id: "opt_piattaforma_640", label: "Piattaforma 640x680", categoria: "piattaforma" },
+                { id: "opt_piattaforma_700", label: "Piattaforma 700x750", categoria: "piattaforma" },
+                { id: "opt_piattaforma_800", label: "Piattaforma 800x800", categoria: "piattaforma" },
+                { id: "opt_piattaforma_900", label: "Piattaforma 800x900", categoria: "piattaforma" },
+                { id: "opt_piattaforma_1050", label: "Piattaforma 800x1050", categoria: "piattaforma" },
+                { id: "opt_piattaforma_1220", label: "Piattaforma 800x1220", categoria: "piattaforma" },
+                { id: "opt_piattaforma_speciale", label: "Piattaforma speciale", categoria: "piattaforma" },
+                { id: "guida_1m_qty", label: "Sezioni guida 1.0m", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "guida_1_4m_qty", label: "Sezioni guida 1.4m", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "guida_1_8m_qty", label: "Sezioni guida 1.8m", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "guida_2_2m_qty", label: "Sezioni guida 2.2m", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "kit_giunzione_qty", label: "Kit giunzione", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "fissaggi_inferiore_qty", label: "Fissaggi guida inferiore", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_fissaggio_gradino", label: "Fissaggio a gradino", categoria: "fissaggio" },
+                { id: "opt_zincatura_pilastrini", label: "Zincatura pilastrini", categoria: "lavorazioni" },
+                { id: "opt_verniciatura_sostegni", label: "Verniciatura sostegni RAL", categoria: "lavorazioni" },
+                { id: "opt_verniciatura_guida", label: "Verniciatura guida RAL", categoria: "lavorazioni" },
+                { id: "opt_verniciatura_veicolo", label: "Verniciatura veicolo RAL", categoria: "lavorazioni" },
+                { id: "pulsantiera_accomp_qty", label: "Pulsantiere accompagnatore", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "pilastrino_pulsantiera_qty", label: "Pilastrini per pulsantiera", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "tettuccio_pulsantiera_qty", label: "Tettucci copripulsantiera", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "tamponamenti_plexi_mt", label: "Tamponamenti plexiglass (metri)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "opt_seggiolino", label: "Seggiolino imbottito", categoria: "accessori" },
+                { id: "opt_prolunga_dx", label: "Prolunga rampa destra", categoria: "accessori" },
+                { id: "opt_prolunga_sx", label: "Prolunga rampa sinistra", categoria: "accessori" },
+                { id: "opt_rampa_dx", label: "Rampa fissa destra", categoria: "accessori" },
+                { id: "opt_rampa_sx", label: "Rampa fissa sinistra", categoria: "accessori" },
+                { id: "opt_telo_copertura", label: "Telo di copertura", categoria: "accessori" },
+                { id: "opt_bloccaggio_solenoide", label: "Bloccaggio piattaforma automatico", categoria: "accessori" },
+                { id: "opt_parapiede", label: "Parapiede pieghevole", categoria: "accessori" },
+                { id: "opt_imbarco_laterale", label: "Imbarco laterale", categoria: "accessori" },
+                { id: "opt_battery_18a", label: "Batteria 18Ah (>6mt)", categoria: "accessori" },
+                { id: "chiavi_qty", label: "Chiavi supplementari", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_one_touch", label: "One Touch Alert", categoria: "accessori" },
+                { id: "opt_kit_spessori", label: "Kit spessori fissaggio muro", categoria: "accessori" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Step ARTIRA": [
-                { id: "alzate", label: "Numero alzate", categoria: "input", tipo: "number", placeholder: "13" },
-                { id: "metri_guida_extra", label: "Metri guida extra", categoria: "input", tipo: "number", step: "0.1", placeholder: "2.5" }
+                { id: "opt_piattaforma_640", label: "Piattaforma 640x680", categoria: "piattaforma" },
+                { id: "opt_piattaforma_700", label: "Piattaforma 700x750", categoria: "piattaforma" },
+                { id: "opt_piattaforma_800", label: "Piattaforma 800x800", categoria: "piattaforma" },
+                { id: "opt_piattaforma_900", label: "Piattaforma 800x900", categoria: "piattaforma" },
+                { id: "opt_piattaforma_1050", label: "Piattaforma 800x1050", categoria: "piattaforma" },
+                { id: "opt_piattaforma_1220", label: "Piattaforma 800x1220", categoria: "piattaforma" },
+                { id: "opt_piattaforma_speciale", label: "Piattaforma speciale", categoria: "piattaforma" },
+                { id: "opt_piattaforma_chiocciola", label: "Piattaforma chiocciola", categoria: "piattaforma" },
+                { id: "metri_binario", label: "Metri binario", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "opt_partenza_ridotta", label: "Partenza diritta ridotta", categoria: "partenza" },
+                { id: "opt_partenza_90", label: "Partenza 90°", categoria: "partenza" },
+                { id: "opt_partenza_180", label: "Partenza 180°", categoria: "partenza" },
+                { id: "opt_partenza_speciale", label: "Partenza speciale", categoria: "partenza" },
+                { id: "opt_arrivo_90", label: "Arrivo 90°", categoria: "arrivo" },
+                { id: "opt_arrivo_180", label: "Arrivo 180°", categoria: "arrivo" },
+                { id: "opt_arrivo_speciale", label: "Arrivo speciale", categoria: "arrivo" },
+                { id: "curve_180_qty", label: "Curve percorso 180°", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_90_qty", label: "Curve percorso 90°", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_pedoca_qty", label: "Curve Pedoca", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_negativa_qty", label: "Curve negative (<90°)", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_raggio_var_qty", label: "Curve raggio variabile", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_base_orizzontale", label: "Base orizzontale (3° tubo)", categoria: "guida" },
+                { id: "eccedenza_orizzontale_mt", label: "Eccedenza orizzontale (metri)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "fissaggio_muro_mt", label: "Fissaggio a muro (metri)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "fissaggio_contropiastre_mt", label: "Fissaggio muro con contropiastre (mt)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "fissaggio_gradino_mt", label: "Fissaggio a gradino (metri)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "fissaggio_zoccolo_mt", label: "Fissaggio a zoccolo (metri)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "fissaggio_occhio_mt", label: "Fissaggio occhio scala (metri)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "opt_traino_90", label: "Gruppo traino 90°", categoria: "traino" },
+                { id: "opt_traino_180", label: "Gruppo traino 180°", categoria: "traino" },
+                { id: "opt_traino_collo_oca", label: "Gruppo traino collo d'oca", categoria: "traino" },
+                { id: "opt_traino_speciale", label: "Gruppo traino speciale", categoria: "traino" },
+                { id: "opt_standard_drive", label: "Standard drive", categoria: "traino" },
+                { id: "opt_tondino_paradito", label: "Tondino paradito", categoria: "lavorazioni" },
+                { id: "opt_verniciatura_guide", label: "Verniciatura guide RAL", categoria: "lavorazioni" },
+                { id: "opt_verniciatura_veicolo", label: "Verniciatura veicolo RAL", categoria: "lavorazioni" },
+                { id: "opt_pulsantiera_accomp", label: "Pulsantiera accompagnatore", categoria: "accessori" },
+                { id: "stazioni_intermedie_qty", label: "Stazioni chiamata intermedie", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "tettuccio_pulsantiera_qty", label: "Tettucci copripulsantiera", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "pilastrino_pulsantiera_qty", label: "Pilastrini pulsantiera", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_alettoni_speciali", label: "Alettoni speciali", categoria: "accessori" },
+                { id: "opt_ramp_extension", label: "Ramp extension kit", categoria: "accessori" },
+                { id: "opt_short_ramp", label: "Short ramp", categoria: "accessori" },
+                { id: "opt_imbarco_laterale", label: "Imbarco laterale", categoria: "accessori" },
+                { id: "tamponamenti_plexi_mt", label: "Tamponamenti plexiglass (mt)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "opt_parapiede", label: "Parapiede pieghevole", categoria: "accessori" },
+                { id: "opt_seggiolino", label: "Seggiolino imbottito", categoria: "accessori" },
+                { id: "opt_chiave_abilitazione", label: "Chiave abilitazione comandi", categoria: "accessori" },
+                { id: "opt_bloccaggio_solenoide", label: "Bloccaggio automatico", categoria: "accessori" },
+                { id: "opt_telo_copertura", label: "Telo di copertura", categoria: "accessori" },
+                { id: "opt_lampeggiante", label: "Lampeggiante e cicalino", categoria: "accessori" },
+                { id: "opt_battery_compact", label: "Battery Compact Drive", categoria: "batterie" },
+                { id: "opt_battery_standard", label: "Battery Standard Drive", categoria: "batterie" },
+                { id: "opt_battery_super", label: "Battery Super Drive", categoria: "batterie" },
+                { id: "chiavi_qty", label: "Chiavi aggiuntive", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_portata_300_muro", label: "Portata 300kg (fissaggio muro)", categoria: "accessori" },
+                { id: "opt_portata_300_pilastrino", label: "Portata 300kg (fissaggio pilastrino)", categoria: "accessori" },
+                { id: "opt_kit_cavi_compact", label: "Kit cavi Compact Drive", categoria: "accessori" },
+                { id: "opt_kit_cavi_standard", label: "Kit cavi Standard Drive", categoria: "accessori" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto", categoria: "servizi" }
             ]
         };
 
-        const nomiCategorie = { input: "Misure e Quantita", guida: "Opzioni Guida", seduta: "Opzioni Seduta", motorizzate: "Opzioni Motorizzate", servizi: "Servizi", opzioni: "Opzioni Aggiuntive", dimensioni: "Dimensioni Piattaforma" };
+        const nomiCategorie = {
+            input: "Misure e Quantità", guida: "Opzioni Guida", seduta: "Opzioni Seduta", motorizzate: "Opzioni Motorizzate",
+            servizi: "Servizi", accessori: "Accessori", piattaforma: "Dimensioni Piattaforma", fissaggio: "Fissaggio",
+            lavorazioni: "Lavorazioni e Finiture", partenza: "Configurazione Partenza", arrivo: "Configurazione Arrivo",
+            traino: "Gruppo di Traino", batterie: "Batterie"
+        };
 
         function calcolaTotale() {
-            const modelloSelezionato = document.querySelector('input[name="modello"]:checked');
-            if (!modelloSelezionato) {
+            const modelloSel = document.querySelector('input[name="modello"]:checked');
+            if (!modelloSel) {
                 document.getElementById("prezzoListino").textContent = "€ 0,00";
                 document.getElementById("prezzoListinoIva").textContent = "(IVA incl. € 0,00)";
                 document.getElementById("prezzoFinale").textContent = "€ 0,00";
                 document.getElementById("prezzoFinaleIva").textContent = "(IVA incl. € 0,00)";
                 return;
             }
-            const nomeModello = modelloSelezionato.value;
-            const prezziModello = prezziModelli[nomeModello];
-            if (!prezziModello) return;
+            const prezzi = prezziModelli[modelloSel.value];
+            if (!prezzi) return;
 
-            let totale = prezziModello.base || 0;
-
+            let totale = prezzi.base || 0;
             document.querySelectorAll('#opzioniContainer input[type="checkbox"]:checked').forEach(cb => {
-                if (prezziModello[cb.id]) totale += prezziModello[cb.id];
+                if (prezzi[cb.id]) totale += prezzi[cb.id];
             });
-
             document.querySelectorAll('#opzioniContainer input[type="number"]').forEach(inp => {
                 const qty = parseFloat(inp.value) || 0;
-                if (qty > 0 && prezziModello[inp.name]) totale += prezziModello[inp.name] * qty;
+                if (qty > 0 && prezzi[inp.name]) totale += prezzi[inp.name] * qty;
             });
 
             const totaleIva = totale * 1.04;
@@ -392,104 +551,60 @@
             }, 50);
         }
 
-        // FUNZIONE CRITICA: raccoglie e SALVA le opzioni
         function raccogliESalvaOpzioni() {
             const modelloSel = document.querySelector('input[name="modello"]:checked');
             if (!modelloSel) return;
-
-            const nomeModello = modelloSel.value;
-            const prezzi = prezziModelli[nomeModello];
-            const definizioni = opzioniPerModello[nomeModello] || [];
+            const prezzi = prezziModelli[modelloSel.value];
+            const definizioni = opzioniPerModello[modelloSel.value] || [];
 
             opzioniSalvate.opzioniCheckbox = [];
             opzioniSalvate.opzioniNumeriche = [];
 
-            // Checkbox selezionati
             document.querySelectorAll('#opzioniContainer input[type="checkbox"]:checked').forEach(cb => {
                 const def = definizioni.find(d => d.id === cb.id);
-                if (def) {
-                    opzioniSalvate.opzioniCheckbox.push({
-                        label: def.label,
-                        prezzo: prezzi[cb.id] || 0
-                    });
-                }
+                if (def) opzioniSalvate.opzioniCheckbox.push({ label: def.label, prezzo: prezzi[cb.id] || 0 });
             });
 
-            // Valori numerici > 0
             document.querySelectorAll('#opzioniContainer input[type="number"]').forEach(inp => {
                 const qty = parseFloat(inp.value) || 0;
                 if (qty > 0) {
                     const def = definizioni.find(d => d.id === inp.name);
                     if (def) {
-                        const prezzoUnit = prezzi[inp.name] || 0;
-                        opzioniSalvate.opzioniNumeriche.push({
-                            label: def.label,
-                            quantita: qty,
-                            prezzoUnitario: prezzoUnit,
-                            prezzoTotale: prezzoUnit * qty
-                        });
+                        const pu = prezzi[inp.name] || 0;
+                        opzioniSalvate.opzioniNumeriche.push({ label: def.label, quantita: qty, prezzoUnitario: pu, prezzoTotale: pu * qty });
                     }
                 }
             });
-
-            console.log("Opzioni salvate:", opzioniSalvate);
         }
 
         function stampaPDF() {
             const d = datiPreventivoSalvati;
             const opts = opzioniSalvate;
-            
-            console.log("Stampa PDF - Dati:", d);
-            console.log("Stampa PDF - Opzioni:", opts);
 
-            // Costruisco tabella opzioni checkbox
             let opzHTML = '';
             if (opts.opzioniCheckbox && opts.opzioniCheckbox.length > 0) {
-                opzHTML += '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;">';
-                opzHTML += '<h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Opzioni Selezionate</h2>';
-                opzHTML += '<table style="width:100%;border-collapse:collapse;">';
-                opzHTML += '<tr style="background:#dbeafe;"><th style="text-align:left;padding:10px;border:1px solid #93c5fd;">Opzione</th><th style="text-align:right;padding:10px;border:1px solid #93c5fd;">Prezzo</th></tr>';
-                opts.opzioniCheckbox.forEach(o => {
-                    opzHTML += '<tr><td style="padding:10px;border:1px solid #bfdbfe;">' + o.label + '</td><td style="text-align:right;padding:10px;border:1px solid #bfdbfe;">€ ' + o.prezzo.toFixed(2) + '</td></tr>';
-                });
+                opzHTML += '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Opzioni Selezionate</h2><table style="width:100%;border-collapse:collapse;"><tr style="background:#dbeafe;"><th style="text-align:left;padding:10px;border:1px solid #93c5fd;">Opzione</th><th style="text-align:right;padding:10px;border:1px solid #93c5fd;">Prezzo</th></tr>';
+                opts.opzioniCheckbox.forEach(o => { opzHTML += '<tr><td style="padding:10px;border:1px solid #bfdbfe;">' + o.label + '</td><td style="text-align:right;padding:10px;border:1px solid #bfdbfe;">€ ' + o.prezzo.toFixed(2) + '</td></tr>'; });
                 opzHTML += '</table></div>';
             }
-
-            // Costruisco tabella misure/quantita
             if (opts.opzioniNumeriche && opts.opzioniNumeriche.length > 0) {
-                opzHTML += '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;">';
-                opzHTML += '<h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Misure e Quantita</h2>';
-                opzHTML += '<table style="width:100%;border-collapse:collapse;">';
-                opzHTML += '<tr style="background:#dbeafe;"><th style="text-align:left;padding:10px;border:1px solid #93c5fd;">Descrizione</th><th style="text-align:center;padding:10px;border:1px solid #93c5fd;">Qta</th><th style="text-align:right;padding:10px;border:1px solid #93c5fd;">Prezzo Unit.</th><th style="text-align:right;padding:10px;border:1px solid #93c5fd;">Totale</th></tr>';
-                opts.opzioniNumeriche.forEach(o => {
-                    opzHTML += '<tr><td style="padding:10px;border:1px solid #bfdbfe;">' + o.label + '</td><td style="text-align:center;padding:10px;border:1px solid #bfdbfe;">' + o.quantita + '</td><td style="text-align:right;padding:10px;border:1px solid #bfdbfe;">€ ' + o.prezzoUnitario.toFixed(2) + '</td><td style="text-align:right;padding:10px;border:1px solid #bfdbfe;">€ ' + o.prezzoTotale.toFixed(2) + '</td></tr>';
-                });
+                opzHTML += '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Misure e Quantità</h2><table style="width:100%;border-collapse:collapse;"><tr style="background:#dbeafe;"><th style="text-align:left;padding:10px;border:1px solid #93c5fd;">Descrizione</th><th style="text-align:center;padding:10px;border:1px solid #93c5fd;">Qtà</th><th style="text-align:right;padding:10px;border:1px solid #93c5fd;">€/unità</th><th style="text-align:right;padding:10px;border:1px solid #93c5fd;">Totale</th></tr>';
+                opts.opzioniNumeriche.forEach(o => { opzHTML += '<tr><td style="padding:10px;border:1px solid #bfdbfe;">' + o.label + '</td><td style="text-align:center;padding:10px;border:1px solid #bfdbfe;">' + o.quantita + '</td><td style="text-align:right;padding:10px;border:1px solid #bfdbfe;">€ ' + o.prezzoUnitario.toFixed(2) + '</td><td style="text-align:right;padding:10px;border:1px solid #bfdbfe;">€ ' + o.prezzoTotale.toFixed(2) + '</td></tr>'; });
                 opzHTML += '</table></div>';
             }
-
-            // Se non ci sono opzioni
-            if (opzHTML === '') {
-                opzHTML = '<div style="margin:25px 0;padding:20px;background:#fef3c7;border-radius:8px;border-left:4px solid #f59e0b;"><p style="color:#92400e;">Nessuna opzione aggiuntiva selezionata - Solo configurazione base.</p></div>';
-            }
+            if (opzHTML === '') opzHTML = '<div style="margin:25px 0;padding:20px;background:#fef3c7;border-radius:8px;border-left:4px solid #f59e0b;"><p style="color:#92400e;">Solo configurazione base.</p></div>';
 
             const scontoHTML = d.sconto > 0 ? '<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>Sconto (' + d.sconto + '%):</span><span style="color:#059669;">- € ' + (d.prezzoListino * d.sconto / 100).toFixed(2) + '</span></div>' : '';
-            
             const noteHTML = d.note ? '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:10px;">Note</h2><p>' + d.note + '</p></div>' : '';
 
             const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Preventivo ' + d.numero + '</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;padding:40px;color:#1e293b;line-height:1.6;}@media print{body{padding:20px;}}</style></head><body>' +
                 '<div style="text-align:center;margin-bottom:40px;border-bottom:4px solid #1e40af;padding-bottom:20px;"><h1 style="color:#1e40af;margin:0 0 10px 0;font-size:28px;">PREVENTIVO MONTASCALE</h1><p style="color:#64748b;">N° ' + d.numero + ' | Data: ' + d.data + '</p></div>' +
-                '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Dati Cliente</h2><p><strong style="color:#1e40af;">Nome:</strong> ' + d.cliente_nome + '</p>' + (d.cliente_email ? '<p><strong style="color:#1e40af;">Email:</strong> ' + d.cliente_email + '</p>' : '') + (d.cliente_telefono ? '<p><strong style="color:#1e40af;">Telefono:</strong> ' + d.cliente_telefono + '</p>' : '') + (d.indirizzo ? '<p><strong style="color:#1e40af;">Indirizzo:</strong> ' + d.indirizzo + '</p>' : '') + '</div>' +
-                '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Prodotto</h2><p><strong style="color:#1e40af;">Tipo:</strong> ' + (d.tipo === 'poltroncina' ? 'Montascale a Poltroncina' : 'Montascale a Pedana') + '</p><p><strong style="color:#1e40af;">Modello:</strong> ' + d.modello + '</p><p><strong style="color:#1e40af;">Prezzo base:</strong> € ' + d.prezzoBase.toFixed(2) + '</p></div>' +
+                '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;">Dati Cliente</h2><p><strong>Nome:</strong> ' + d.cliente_nome + '</p>' + (d.cliente_email ? '<p><strong>Email:</strong> ' + d.cliente_email + '</p>' : '') + (d.cliente_telefono ? '<p><strong>Tel:</strong> ' + d.cliente_telefono + '</p>' : '') + (d.indirizzo ? '<p><strong>Indirizzo:</strong> ' + d.indirizzo + '</p>' : '') + '</div>' +
+                '<div style="margin:25px 0;padding:20px;background:#f0f9ff;border-radius:8px;border-left:4px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;">Prodotto</h2><p><strong>Tipo:</strong> ' + (d.tipo === 'poltroncina' ? 'Montascale a Poltroncina' : 'Montascale a Pedana') + '</p><p><strong>Modello:</strong> ' + d.modello + '</p><p><strong>Prezzo base:</strong> € ' + d.prezzoBase.toFixed(2) + '</p></div>' +
                 opzHTML +
-                '<div style="margin:25px 0;padding:20px;background:linear-gradient(135deg,#e0f2fe,#dbeafe);border-radius:8px;border:2px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;border-bottom:2px solid #0ea5e9;padding-bottom:8px;">Riepilogo Economico</h2>' +
-                '<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>Prezzo di Listino:</span><span style="font-weight:600;">€ ' + d.prezzoListino.toFixed(2) + '</span></div>' +
-                scontoHTML +
-                '<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>Imponibile:</span><span>€ ' + d.imponibile.toFixed(2) + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>IVA (4%):</span><span>€ ' + d.iva.toFixed(2) + '</span></div>' +
-                '<div style="display:flex;justify-content:space-between;padding:15px 0;margin-top:10px;border-top:3px solid #0ea5e9;font-size:1.3rem;font-weight:bold;color:#1e40af;"><span>TOTALE:</span><span>€ ' + d.totaleFinale.toFixed(2) + '</span></div></div>' +
+                '<div style="margin:25px 0;padding:20px;background:linear-gradient(135deg,#e0f2fe,#dbeafe);border-radius:8px;border:2px solid #0ea5e9;"><h2 style="color:#1e40af;font-size:18px;margin-bottom:15px;">Riepilogo Economico</h2><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>Prezzo di Listino:</span><span style="font-weight:600;">€ ' + d.prezzoListino.toFixed(2) + '</span></div>' + scontoHTML + '<div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>Imponibile:</span><span>€ ' + d.imponibile.toFixed(2) + '</span></div><div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #bae6fd;"><span>IVA (4%):</span><span>€ ' + d.iva.toFixed(2) + '</span></div><div style="display:flex;justify-content:space-between;padding:15px 0;margin-top:10px;border-top:3px solid #0ea5e9;font-size:1.3rem;font-weight:bold;color:#1e40af;"><span>TOTALE:</span><span>€ ' + d.totaleFinale.toFixed(2) + '</span></div></div>' +
                 noteHTML +
-                '<div style="margin-top:40px;padding-top:20px;border-top:2px solid #e0f2fe;text-align:center;color:#64748b;font-size:12px;"><p>Preventivo generato il ' + d.data + ' | Facile Salire</p><p>Validita: 30 giorni dalla data di emissione</p></div>' +
-                '</body></html>';
+                '<div style="margin-top:40px;padding-top:20px;border-top:2px solid #e0f2fe;text-align:center;color:#64748b;font-size:12px;"><p>Preventivo del ' + d.data + ' | Facile Salire</p><p>Validità: 30 giorni</p></div></body></html>';
 
             const win = window.open('', '_blank');
             win.document.write(html);
@@ -497,18 +612,27 @@
             setTimeout(() => win.print(), 300);
         }
 
-        // EVENT LISTENERS
+        function resetPreventivo() {
+            document.getElementById("preventivoForm").reset();
+            document.getElementById("modelliPoltroncina").classList.add("hidden");
+            document.getElementById("modelliPedana").classList.add("hidden");
+            document.getElementById("opzioniContainer").innerHTML = "";
+            document.getElementById("risultato").style.display = "none";
+            document.getElementById("prezzoListino").textContent = "€ 0,00";
+            document.getElementById("prezzoListinoIva").textContent = "(IVA incl. € 0,00)";
+            document.getElementById("prezzoFinale").textContent = "€ 0,00";
+            document.getElementById("prezzoFinaleIva").textContent = "(IVA incl. € 0,00)";
+            opzioniSalvate = { opzioniCheckbox: [], opzioniNumeriche: [] };
+            datiPreventivoSalvati = {};
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
         document.querySelectorAll('input[name="tipo"]').forEach(r => {
             r.addEventListener("change", function() {
                 document.querySelectorAll('input[name="modello"]').forEach(m => m.checked = false);
                 document.getElementById("opzioniContainer").innerHTML = "";
-                if (this.value === "poltroncina") {
-                    document.getElementById("modelliPoltroncina").classList.remove("hidden");
-                    document.getElementById("modelliPedana").classList.add("hidden");
-                } else {
-                    document.getElementById("modelliPoltroncina").classList.add("hidden");
-                    document.getElementById("modelliPedana").classList.remove("hidden");
-                }
+                document.getElementById("modelliPoltroncina").classList.toggle("hidden", this.value !== "poltroncina");
+                document.getElementById("modelliPedana").classList.toggle("hidden", this.value !== "pedana");
             });
         });
 
@@ -516,51 +640,17 @@
             r.addEventListener("change", function() { generaOpzioni(this.value); });
         });
 
-        function resetPreventivo() {
-            // Reset form
-            document.getElementById("preventivoForm").reset();
-            
-            // Nascondi modelli
-            document.getElementById("modelliPoltroncina").classList.add("hidden");
-            document.getElementById("modelliPedana").classList.add("hidden");
-            
-            // Svuota opzioni
-            document.getElementById("opzioniContainer").innerHTML = "";
-            
-            // Nascondi risultato
-            document.getElementById("risultato").style.display = "none";
-            
-            // Reset prezzi
-            document.getElementById("prezzoListino").textContent = "€ 0,00";
-            document.getElementById("prezzoListinoIva").textContent = "(IVA incl. € 0,00)";
-            document.getElementById("prezzoFinale").textContent = "€ 0,00";
-            document.getElementById("prezzoFinaleIva").textContent = "(IVA incl. € 0,00)";
-            
-            // Reset variabili globali
-            opzioniSalvate = { opzioniCheckbox: [], opzioniNumeriche: [] };
-            datiPreventivoSalvati = {};
-            
-            // Scroll top
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-
         document.getElementById("sconto").addEventListener("input", calcolaTotale);
 
         document.getElementById("preventivoForm").addEventListener("submit", function(e) {
             e.preventDefault();
-
-            // PRIMA raccolgo e salvo le opzioni
             raccogliESalvaOpzioni();
-
             const formData = new FormData(this);
             const dati = Object.fromEntries(formData.entries());
-            
             const numero = 'MS-' + new Date().getFullYear() + '-' + Date.now().toString().slice(-6);
             const data = new Date().toLocaleDateString("it-IT");
-            
             const prezzoListinoTxt = document.getElementById("prezzoListino").textContent;
             const prezzoFinaleTxt = document.getElementById("prezzoFinaleIva").textContent;
-            
             const prezzoListino = parseFloat(prezzoListinoTxt.replace("€ ", "").replace(/\./g, "").replace(",", ".")) || 0;
             const totaleFinale = parseFloat(prezzoFinaleTxt.match(/€ ([\d.,]+)/)[1].replace(/\./g, "").replace(",", ".")) || 0;
             const sconto = parseFloat(dati.sconto) || 0;
@@ -568,30 +658,11 @@
             const iva = imponibile * 0.04;
             const prezzoBase = prezziModelli[dati.modello]?.base || 0;
 
-            // Salvo TUTTI i dati per il PDF
-            datiPreventivoSalvati = {
-                numero: numero,
-                data: data,
-                cliente_nome: dati.cliente_nome,
-                cliente_email: dati.cliente_email || '',
-                cliente_telefono: dati.cliente_telefono || '',
-                indirizzo: dati.indirizzo || '',
-                note: dati.note || '',
-                tipo: dati.tipo,
-                modello: dati.modello,
-                prezzoBase: prezzoBase,
-                prezzoListino: prezzoListino,
-                sconto: sconto,
-                imponibile: imponibile,
-                iva: iva,
-                totaleFinale: totaleFinale
-            };
-
-            console.log("Dati preventivo salvati:", datiPreventivoSalvati);
+            datiPreventivoSalvati = { numero, data, cliente_nome: dati.cliente_nome, cliente_email: dati.cliente_email || '', cliente_telefono: dati.cliente_telefono || '', indirizzo: dati.indirizzo || '', note: dati.note || '', tipo: dati.tipo, modello: dati.modello, prezzoBase, prezzoListino, sconto, imponibile, iva, totaleFinale };
 
             const risultato = document.getElementById("risultato");
             risultato.style.display = "block";
-            risultato.innerHTML = '<h2>✓ Preventivo Generato</h2><p style="margin:20px 0;">Preventivo creato con successo!</p><p style="font-size:0.95rem;opacity:0.9;"><strong>Preventivo n. ' + numero + '</strong><br>Data: ' + data + '<br>Totale IVA inclusa: € ' + totaleFinale.toFixed(2) + '</p><button onclick="stampaPDF()" style="display:inline-block;background:white;color:#1e40af;padding:14px 32px;border:2px solid white;border-radius:12px;font-weight:600;margin-top:20px;cursor:pointer;font-family:Outfit,sans-serif;font-size:1rem;">📄 Stampa PDF</button>';
+            risultato.innerHTML = '<h2>✓ Preventivo Generato</h2><p style="margin:20px 0;">Preventivo creato!</p><p style="font-size:0.95rem;opacity:0.9;"><strong>N. ' + numero + '</strong><br>Data: ' + data + '<br>Totale IVA incl.: € ' + totaleFinale.toFixed(2) + '</p><button onclick="stampaPDF()" style="display:inline-block;background:white;color:#1e40af;padding:14px 32px;border:2px solid white;border-radius:12px;font-weight:600;margin-top:20px;cursor:pointer;font-family:Outfit,sans-serif;font-size:1rem;">📄 Stampa PDF</button>';
             risultato.scrollIntoView({ behavior: "smooth", block: "center" });
         });
     </script>
