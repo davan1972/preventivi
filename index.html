@@ -68,7 +68,39 @@
         .discount-input-wrapper input { width: 100%; padding: 22px 30px; font-size: 2.2rem; font-weight: 700; text-align: center; border: 3px solid var(--border); border-radius: 16px; font-family: 'Outfit', sans-serif; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); color: var(--primary); }
         .discount-input-wrapper input:focus { outline: 0; border-color: var(--accent); background: #fff; }
         footer { text-align: center; margin-top: 85px; padding-top: 55px; border-top: 2px solid rgba(59, 130, 246, .2); color: var(--text-light); font-size: .92rem; }
-        @media (max-width: 768px) { h1 { font-size: 2.8rem; } .form-card { padding: 35px 22px; } .radio-group { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            h1 { font-size: 2.2rem; } 
+            .subtitle { font-size: 1rem; }
+            .container { padding: 20px 15px; }
+            .form-card { padding: 25px 18px; border-radius: 20px; } 
+            .radio-group { grid-template-columns: 1fr; gap: 12px; }
+            .radio-option label { padding: 16px 18px; font-size: 0.95rem; }
+            .section-title { font-size: 1.4rem; gap: 12px; }
+            .section-number { width: 36px; height: 36px; font-size: 1rem; }
+            .option-category { padding: 20px 15px; margin-bottom: 25px; }
+            .category-title { font-size: 1.15rem; }
+            .checkbox-option label { padding: 14px 16px; font-size: 0.9rem; }
+            .input-wrapper input, .input-wrapper textarea { padding: 14px 16px; font-size: 0.95rem; }
+            .price-summary { padding: 25px 18px; }
+            .price-label { font-size: 1.1rem; }
+            .price-value { font-size: 1.8rem; }
+            .price-final .price-value { font-size: 2.4rem; }
+            .discount-input-wrapper { padding: 20px; margin: 20px 0; }
+            .discount-input-wrapper input { padding: 16px 20px; font-size: 1.6rem; }
+            .btn-submit, .btn-reset { padding: 18px 30px; font-size: 1rem; }
+            #risultato { padding: 25px 20px; border-radius: 18px; }
+            #risultato h2 { font-size: 1.8rem; }
+            .form-section { margin-bottom: 35px; }
+            footer { margin-top: 50px; padding-top: 30px; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .form-card { padding: 20px 15px; }
+            .price-value { font-size: 1.5rem; }
+            .price-final .price-value { font-size: 2rem; }
+            .discount-input-wrapper input { font-size: 1.4rem; }
+        }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
@@ -662,7 +694,7 @@
 
             const risultato = document.getElementById("risultato");
             risultato.style.display = "block";
-            risultato.innerHTML = '<h2>✓ Preventivo Generato</h2><p style="margin:20px 0;">Preventivo creato!</p><p style="font-size:0.95rem;opacity:0.9;"><strong>N. ' + numero + '</strong><br>Data: ' + data + '<br>Totale IVA incl.: € ' + totaleFinale.toFixed(2) + '</p><button onclick="stampaPDF()" style="display:inline-block;background:white;color:#1e40af;padding:14px 32px;border:2px solid white;border-radius:12px;font-weight:600;margin-top:20px;cursor:pointer;font-family:Outfit,sans-serif;font-size:1rem;">📄 Stampa PDF</button>';
+            risultato.innerHTML = '<h2>✓ Preventivo Generato</h2><p style="margin:20px 0;">Preventivo creato!</p><p style="font-size:0.95rem;opacity:0.9;"><strong>N. ' + numero + '</strong><br>Data: ' + data + '<br>Totale IVA incl.: € ' + totaleFinale.toFixed(2) + '</p><div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px;"><button onclick="stampaPDF()" style="background:white;color:#1e40af;padding:14px 28px;border:2px solid white;border-radius:12px;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;font-size:1rem;">📄 Stampa PDF</button><button onclick="resetPreventivo()" class="no-print" style="background:linear-gradient(135deg,#f97316,#ef4444);color:white;padding:14px 28px;border:none;border-radius:12px;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif;font-size:1rem;">🔄 Nuovo Preventivo</button></div>';
             risultato.scrollIntoView({ behavior: "smooth", block: "center" });
         });
     </script>
