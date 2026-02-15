@@ -639,7 +639,7 @@
 
     <script>
         // Configurazione n8n webhook
-const N8N_WEBHOOK_URL = 'https://n8n.srv1137812.hstgr.cloud/webhook-test/preventivo-montascale';
+        const N8N_WEBHOOK_URL = 'https://TUO_N8N_URL.app.n8n.cloud/webhook/preventivo-montascale';
 
         // Mappa prezzi per modello (estratti da Excel)
         const prezziModelli = {
@@ -1099,71 +1099,129 @@ const N8N_WEBHOOK_URL = 'https://n8n.srv1137812.hstgr.cloud/webhook-test/prevent
         document.getElementById('sconto').addEventListener('input', calcolaTotale);
 
         // Gestione invio form
-        document.getElementById('preventivoForm').addEventListener('submit', async function(e) {
+        document.getElementById('preventivoForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
 
-            // Aggiungi prezzi calcolati
+            // Genera numero preventivo
+            const numeroPreventivo = `MS-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
+            const dataOggi = new Date().toLocaleDateString('it-IT');
+
+            // Prezzi calcolati
             const prezzoListinoText = document.getElementById('prezzoListino').textContent;
             const prezzoFinaleText = document.getElementById('prezzoFinale').textContent;
+            const prezzoListinoIvaText = document.getElementById('prezzoListinoIva').textContent;
+            const prezzoFinaleIvaText = document.getElementById('prezzoFinaleIva').textContent;
             
-            data.prezzoListino = parseFloat(prezzoListinoText.replace('€ ', '').replace(/\./g, '').replace(',', '.')) || 0;
-            data.prezzoFinale = parseFloat(prezzoFinaleText.replace('€ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+            const totaleNetto = parseFloat(prezzoListinoText.replace('€ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+            const totaleIvato = parseFloat(prezzoFinaleIvaText.match(/€ ([\d.,]+)/)[1].replace(/\./g, '').replace(',', '.')) || 0;
+            const sconto = parseFloat(data.sconto) || 0;
 
-            // Mostra loading
+            // Genera PDF (usando window.print)
+            const htmlPDF = generaHTMLPreventivo(numeroPreventivo, dataOggi, data, totaleNetto, totaleIvato, sconto);
+
+            // Mostra risultato
             const risultato = document.getElementById('risultato');
             risultato.style.display = 'block';
             risultato.innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Generazione preventivo in corso...</p>
-                </div>
+                <h2>✓ Preventivo Generato</h2>
+                <p style="margin: 20px 0;">Il preventivo è stato creato con successo.</p>
+                <p style="font-size: 0.95rem; opacity: 0.9;">
+                    <strong>Preventivo n. ${numeroPreventivo}</strong><br>
+                    Data: ${dataOggi}<br>
+                    Totale IVA inclusa: € ${totaleIvato.toFixed(2)}
+                </p>
+                <button onclick="stampaPDF()" 
+                        style="display: inline-block; 
+                               background: white; 
+                               color: var(--primary); 
+                               padding: 14px 32px; 
+                               border: 2px solid white;
+                               border-radius: 8px; 
+                               font-weight: 600;
+                               margin-top: 20px;
+                               cursor: pointer;
+                               font-family: 'Outfit', sans-serif;
+                               font-size: 1rem;">
+                    📄 Scarica/Stampa PDF
+                </button>
             `;
-
-            try {
-                // Chiamata a n8n
-                const response = await fetch(N8N_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Errore nella generazione del preventivo');
-                }
-
-                const result = await response.json();
-
-                // Mostra risultato
-                risultato.innerHTML = `
-                    <h2>✓ Preventivo Generato</h2>
-                    <p style="margin: 20px 0;">Il preventivo è stato creato con successo.</p>
-                    <p style="font-size: 0.95rem; opacity: 0.9;">
-                        <strong>Preventivo n. ${result.numero_preventivo || 'N/A'}</strong><br>
-                        Totale IVA inclusa: € ${result.totale || '0.00'}
-                    </p>
-                    <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
-                        ${result.message || 'Preventivo salvato nello storico'}
-                    </p>
-                `;
-
-            } catch (error) {
-                risultato.innerHTML = `
-                    <h2>⚠ Errore</h2>
-                    <p>Si è verificato un errore nella generazione del preventivo.</p>
-                    <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.8;">
-                        ${error.message}
-                    </p>
-                `;
-            }
 
             // Scroll al risultato
             risultato.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
+
+        // Funzione genera HTML preventivo
+        function generaHTMLPreventivo(numero, data, formData, totaleNetto, totaleIvato, sconto) {
+            const totaleDopoSconto = totaleNetto * (1 - sconto / 100);
+            const iva = totaleDopoSconto * 0.04;
+
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; padding: 40px; }
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 4px solid #1a4d2e; padding-bottom: 20px; }
+        .header h1 { color: #1a4d2e; margin: 0; }
+        .section { margin: 30px 0; padding: 20px; background: #faf8f3; border-radius: 8px; }
+        .section h2 { color: #1a4d2e; border-bottom: 2px solid #d4af37; padding-bottom: 8px; }
+        .price-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e5e0d5; }
+        .price-row.total { font-size: 1.3rem; font-weight: bold; color: #1a4d2e; border-top: 3px solid #d4af37; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PREVENTIVO MONTASCALE</h1>
+        <p><strong>N° ${numero}</strong> - ${data}</p>
+    </div>
+    <div class="section">
+        <h2>Dati Cliente</h2>
+        <p><strong>Nome:</strong> ${formData.cliente_nome}</p>
+        ${formData.cliente_email ? `<p><strong>Email:</strong> ${formData.cliente_email}</p>` : ''}
+        ${formData.cliente_telefono ? `<p><strong>Telefono:</strong> ${formData.cliente_telefono}</p>` : ''}
+        ${formData.indirizzo ? `<p><strong>Indirizzo:</strong> ${formData.indirizzo}</p>` : ''}
+    </div>
+    <div class="section">
+        <h2>Prodotto</h2>
+        <p><strong>Tipo:</strong> ${formData.tipo === 'poltroncina' ? 'Montascale a Poltroncina' : 'Montascale a Pedana'}</p>
+        <p><strong>Modello:</strong> ${formData.modello}</p>
+    </div>
+    <div class="section">
+        <h2>Riepilogo Economico</h2>
+        <div class="price-row"><span>Prezzo di Listino:</span><span>€ ${totaleNetto.toFixed(2)}</span></div>
+        ${sconto > 0 ? `<div class="price-row"><span>Sconto (${sconto}%):</span><span>- € ${(totaleNetto * sconto / 100).toFixed(2)}</span></div>` : ''}
+        <div class="price-row"><span>IVA (4%):</span><span>€ ${iva.toFixed(2)}</span></div>
+        <div class="price-row total"><span>TOTALE:</span><span>€ ${totaleIvato.toFixed(2)}</span></div>
+    </div>
+    ${formData.note ? `<div class="section"><h2>Note</h2><p>${formData.note}</p></div>` : ''}
+</body>
+</html>`;
+        }
+
+        // Funzione stampa PDF
+        function stampaPDF() {
+            const formData = new FormData(document.getElementById('preventivoForm'));
+            const data = Object.fromEntries(formData.entries());
+            const numeroPreventivo = document.querySelector('#risultato strong').textContent.replace('Preventivo n. ', '');
+            const dataOggi = new Date().toLocaleDateString('it-IT');
+            
+            const prezzoListinoText = document.getElementById('prezzoListino').textContent;
+            const prezzoFinaleIvaText = document.getElementById('prezzoFinaleIva').textContent;
+            const totaleNetto = parseFloat(prezzoListinoText.replace('€ ', '').replace(/\./g, '').replace(',', '.')) || 0;
+            const totaleIvato = parseFloat(prezzoFinaleIvaText.match(/€ ([\d.,]+)/)[1].replace(/\./g, '').replace(',', '.')) || 0;
+            const sconto = parseFloat(data.sconto) || 0;
+
+            const htmlContent = generaHTMLPreventivo(numeroPreventivo, dataOggi, data, totaleNetto, totaleIvato, sconto);
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
     </script>
 </body>
 </html>
