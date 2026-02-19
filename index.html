@@ -184,30 +184,70 @@
         let datiPreventivoSalvati = {};
 
         const prezziModelli = {
-            // POLTRONCINE
-            "Facile Sprint 1100": { base: 4508, opt_estensione_guida: 429.8, opt_guida_tagliata: 100.8, opt_guida_ribaltabile: 553, opt_tappeti: 82.6, opt_guida_scorrevole_47: 1349.6, opt_guida_scorrevole_705: 1776.6, opt_zero_intrusion_47: 288.4, opt_zero_intrusion_705: 373.8, opt_rotazione_auto: 1054.2, opt_pedana_motor: 1036, opt_motor_completo: 1573.6, opt_one_touch: 603.2 },
-            "Facile Elegance 1000": { base: 5150, opt_estensione_guida: 335.4, opt_guida_tagliata: 97.5, opt_guida_ribaltabile: 770.9, opt_tappeti: 54.6, opt_guida_ribaltabile_motor: 1110.2, opt_versione_esterni: 579.8, opt_sedile_perch: 232.7, opt_distanziale_singolo: 104, opt_distanziale_doppio: 157.3, opt_cintura_velcro: 124.8, opt_body_harness: 596.7, opt_heavy_duty_xl: 380.9, opt_heavy_duty_xxl: 1648.4, opt_rotazione_auto: 512.2, opt_rotazione_2dir: 683.8, opt_pedana_motor: 495.3, opt_motor_completo: 1006.2, opt_motor_completo_2dir: 1177.8, opt_one_touch: 603.2, opt_smontaggio: 300 },
-            "Facile Superior H4000": { base: 5985.2, metri_guida: 308.75, opt_sedile_perch: 546, opt_sedile_esterni: 286, opt_sedile_style: 286, opt_bracciolo_corto: 130, opt_distanziale_singolo: 101.4, opt_distanziale_doppio: 156, opt_cintura_velcro: 123.5, opt_body_harness: 592.8, curve_90_qty: 673.4, punti_ricarica_qty: 127.4, metri_esterni: 45.5, fermate_intermedie_qty: 127.4, opt_overrun: 358.8, opt_dropnose: 371.8, opt_guida_ribaltabile_motor: 1638, opt_heavy_duty_160: 897, opt_tappeti: 54.6, opt_colore_speciale: 1150.5, opt_versione_esterni: 1524.9, opt_piastre_muro: 80.6, opt_conversion_kit: 66.3, opt_rotazione_auto: 496.6, opt_pedana_motor: 496.6, opt_motor_completo: 980.2, radiocomandi_qty: 113.1, opt_one_touch: 603.2 },
-            "Facile Graziosa Freecurve": { base: 7501.8, metri_guida: 436.8, curve_90_qty: 741, punti_ricarica_qty: 140.4, attacchi_muro_qty: 88.4, radiocomandi_qty: 124.8, opt_elegance_seat: 315.6, opt_alliance_seat: 491.4, opt_active_seat: 648.7, opt_body_harness_4p: 648.7, opt_guida_ribaltabile_motor: 1803.9, opt_colore_speciale: 1267.5, opt_solo_guida: 2119.5, opt_rotazione_auto: 546, opt_rotazione_2dir: 720.2, opt_pedana_illuminato: 546, opt_batteria_extra: 140.4, opt_batteria_ultra: 218.4, opt_kit_ripetitore: 234 },
-            "Infinity Curvilineo Bespoke": { base: 7150, metri_guida: 280.8, metri_guida_hd: 312, curve_90_qty: 468, curve_180_qty: 624, curve_speciali_qty: 624, fermate_intermedie_qty: 156, punti_ricarica_qty: 124.8, telecomandi_qty: 93.6, opt_motor_hd: 1092, opt_seduta_regolabile: 218.4, opt_sedile_motor: 405.6, opt_dual_control: 218.4, opt_partenza_drop: 249.6, opt_arrivo_orizzontale: 249.6, opt_fissaggio_muro: 93.6, opt_coprigambe: 93.6, opt_colore_nero: 468, opt_colore_marrone: 468 },
-            // PEDANE - AGGIORNATE
+            // POLTRONCINE - AGGIORNATE 2026 (base include montaggio e trasporto)
+            "Facile Sprint 1100": { 
+                base: 4508, montaggio: 500, trasporto: 125,
+                opt_estensione_guida: 429.8, opt_guida_tagliata: 100.8, opt_guida_ribaltabile: 553, opt_tappeti: 82.6, 
+                opt_guida_scorrevole_47: 1349.6, opt_guida_scorrevole_705: 1776.6, opt_zero_intrusion_47: 288.4, opt_zero_intrusion_705: 373.8, 
+                opt_rotazione_auto: 1054.2, opt_pedana_motor: 1036, opt_motor_completo: 1573.6, opt_one_touch: 603.2, opt_smontaggio: 300 
+            },
+            "Facile Elegance 1000": { 
+                base: 5150, montaggio: 500, trasporto: 125,
+                opt_estensione_guida: 335.4, opt_guida_tagliata: 97.5, opt_guida_ribaltabile: 770.9, opt_tappeti: 54.6, 
+                opt_guida_ribaltabile_motor: 1110.2, opt_versione_esterni: 579.8, opt_sedile_perch: 232.7, opt_distanziale_singolo: 104, 
+                opt_distanziale_doppio: 157.3, opt_cintura_velcro: 0, opt_cintura_velcro_xxl: 124.8, opt_body_harness: 596.7, 
+                opt_heavy_duty_xl: 380.9, opt_heavy_duty_xxl: 1648.4, opt_rotazione_auto: 512.2, opt_rotazione_2dir: 683.8, 
+                opt_pedana_motor: 495.3, opt_motor_completo: 1006.2, opt_motor_completo_2dir: 1177.8, opt_one_touch: 603.2, opt_smontaggio: 300 
+            },
+            "Facile Superior H4000": { 
+                base: 5985.2, montaggio: 700, trasporto: 405,
+                metri_guida: 308.75, opt_sedile_perch: 546, opt_sedile_esterni: 286, opt_sedile_style: 286, 
+                opt_bracciolo_corto: 130, opt_distanziale_singolo: 101.4, opt_distanziale_doppio: 156, opt_seggiolino_fisso: 239.2,
+                opt_cintura_velcro: 0, opt_cintura_velcro_xxl: 123.5, opt_body_harness: 592.8, 
+                curve_90_qty: 673.4, opt_overrun: 358.8, opt_dropnose: 371.8, opt_guida_ribaltabile_motor: 1638, opt_heavy_duty_160: 897, 
+                punti_ricarica_qty: 127.4, opt_conversion_kit: 66.3, opt_tappeti: 54.6, opt_colore_speciale: 1150.5, 
+                metri_esterni: 45.5, opt_versione_esterni: 1524.9, fermate_intermedie_qty: 127.4, opt_piastre_muro: 80.6, opt_solo_guida: 1319.5,
+                opt_rotazione_auto: 496.6, opt_pedana_motor: 496.6, opt_motor_completo: 980.2, 
+                radiocomandi_qty: 113.1, opt_one_touch: 603.2, opt_smontaggio: 750 
+            },
+            "Facile Graziosa Freecurve": { 
+                base: 7551.7, montaggio: 700, trasporto: 290,
+                metri_guida: 260, opt_elegance_seat: 344.5, opt_alliance_seat: 344.5, opt_active_seat: 661.7, opt_body_harness_4p: 301.6, 
+                curve_90_qty: 644.8, opt_guida_ribaltabile_motor: 1062.1, punti_ricarica_qty: 114.4, attacchi_muro_qty: 126.1, 
+                opt_colore_speciale: 2093, opt_solo_guida: 2353, 
+                opt_rotazione_auto: 384.8, opt_rotazione_2dir: 720.2, opt_pedana_illuminato: 332.8, 
+                radiocomandi_qty: 114.4, opt_batteria_extra: 176.8, opt_batteria_ultra: 1121.9, opt_kit_ripetitore: 344.5, radiocomandi_ripetitore_qty: 114.4,
+                opt_smontaggio: 0 
+            },
+            "Infinity Curvilineo Bespoke": { 
+                base: 6680, montaggio: 700, trasporto: 370,
+                opt_hd_completo: 8572, opt_motore_hd: 3698, opt_seduta_regolabile: 882, opt_binario_hd: 3992,
+                opt_sedile_motor: 658, opt_dual_control: 76,
+                metri_guida: 276, metri_guida_hd: 434, curve_90_qty: 712, curve_180_qty: 1054, curve_speciali_qty: 1036, 
+                opt_partenza_drop: 422, opt_arrivo_orizzontale: 330, fermate_intermedie_qty: 488, punti_ricarica_qty: 132, 
+                telecomandi_qty: 198, coprigambe_qty: 8, opt_fissaggio_muro: 40, opt_colore_nero: 628, opt_colore_marrone: 628, 
+                opt_smontaggio: 0 
+            },
+            // PEDANE - AGGIORNATE 2026 (include montaggio, trasporto, imballo)
             "Facile Step SRC": {
-                base: 8287.5,
+                base: 8287.5, montaggio: 850, trasporto: 400, imballo: 80,
                 alzate: 75, metri_guida_extra: 225, guida_zincata_alzata: 30, guida_zincata_metro: 90, colonnini_qty: 120,
                 fermate_intermedie_qty: 450, opt_comando_acustico: 225, opt_pulsantiera_accomp: 300, opt_ribaltamento_motor: 675,
                 opt_colore_ral: 750, opt_strapuntino: 375, opt_piattaforma_700: 150, opt_piattaforma_speciale: 375,
-                opt_bandella_laterale: 375, opt_telo_copertura: 375, opt_soccorritore: 750, opt_smontaggio: 750
+                opt_bandella_laterale: 375, opt_telo_copertura: 375, opt_soccorritore: 750, opt_smontaggio: 750,
+                opt_ztl: 150, montaggio_alzata: 25, montaggio_metro: 80
             },
             "Facile Step SSC": {
-                base: 10062,
+                base: 10062, montaggio: 1000, trasporto: 400, imballo: 80,
                 alzate: 78, metri_guida_extra: 234, guida_zincata_alzata: 31.2, guida_zincata_metro: 93.6, colonnini_qty: 124.8,
                 curve_90_qty: 702, curve_180_qty: 904.8, curve_zincate_qty: 78,
                 fermate_intermedie_qty: 468, opt_soccorritore: 780, opt_comando_acustico: 234, opt_pulsantiera_accomp: 312,
                 opt_ribaltamento_motor: 702, opt_colore_ral: 780, opt_strapuntino: 390, opt_piattaforma_700: 156,
-                opt_piattaforma_speciale: 390, opt_bandella_laterale: 390, opt_telo_copertura: 390, opt_smontaggio: 1000
+                opt_piattaforma_speciale: 390, opt_bandella_laterale: 390, opt_telo_copertura: 390, opt_smontaggio: 1000,
+                opt_ztl: 150, montaggio_alzata: 30, montaggio_metro: 100, montaggio_curva: 60, montaggio_fermata: 50
             },
             "Facile Step X3": {
-                base: 9245.6,
+                base: 9245.6, montaggio: 800, trasporto: 500,
                 opt_guida_tagliata: 267.8,
                 opt_piattaforma_640: 845, opt_piattaforma_700: 0, opt_piattaforma_800: 0, opt_piattaforma_900: 0,
                 opt_piattaforma_1050: 469.3, opt_piattaforma_1220: 469.3, opt_piattaforma_speciale: 1553.5,
@@ -221,7 +261,7 @@
                 opt_battery_18a: 210.6, chiavi_qty: 15.6, opt_one_touch: 603.2, opt_kit_spessori: 143, opt_smontaggio: 750
             },
             "Facile Step ARTIRA": {
-                base: 12906.6,
+                base: 12906.6, montaggio: 1400, trasporto: 500,
                 opt_piattaforma_640: 504, opt_piattaforma_700: 0, opt_piattaforma_800: 0, opt_piattaforma_900: 0,
                 opt_piattaforma_1050: 505.4, opt_piattaforma_1220: 505.4, opt_piattaforma_speciale: 2690.8, opt_piattaforma_chiocciola: 5486.6,
                 metri_binario: 571.2,
@@ -256,7 +296,8 @@
                 { id: "opt_rotazione_auto", label: "Rotazione seggiolino automatica", categoria: "motorizzate" },
                 { id: "opt_pedana_motor", label: "Poggiapiedi motorizzato", categoria: "motorizzate" },
                 { id: "opt_motor_completo", label: "Motorizzato completo", categoria: "motorizzate" },
-                { id: "opt_one_touch", label: "One Touch Alert", categoria: "motorizzate" }
+                { id: "opt_one_touch", label: "One Touch Alert", categoria: "motorizzate" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Elegance 1000": [
                 { id: "opt_estensione_guida", label: "Estensione guida 2.35 mt", categoria: "guida" },
@@ -268,10 +309,11 @@
                 { id: "opt_sedile_perch", label: "Sedile Smart Perch", categoria: "seduta" },
                 { id: "opt_distanziale_singolo", label: "Distanziale singolo (+56mm)", categoria: "seduta" },
                 { id: "opt_distanziale_doppio", label: "Distanziale doppio (+102mm)", categoria: "seduta" },
-                { id: "opt_cintura_velcro", label: "Cintura Velcro XXL", categoria: "seduta" },
+                { id: "opt_cintura_velcro", label: "Cintura in Velcro", categoria: "seduta" },
+                { id: "opt_cintura_velcro_xxl", label: "Cintura Velcro XXL", categoria: "seduta" },
                 { id: "opt_body_harness", label: "Body harness", categoria: "seduta" },
-                { id: "opt_heavy_duty_xl", label: "Heavy Duty XL", categoria: "seduta" },
-                { id: "opt_heavy_duty_xxl", label: "Extra Heavy Duty XXL", categoria: "seduta" },
+                { id: "opt_heavy_duty_xl", label: "Heavy Duty XL", categoria: "heavyduty" },
+                { id: "opt_heavy_duty_xxl", label: "Extra Heavy Duty XXL", categoria: "heavyduty" },
                 { id: "opt_rotazione_auto", label: "Rotazione automatica", categoria: "motorizzate" },
                 { id: "opt_rotazione_2dir", label: "Rotazione 2-direzioni", categoria: "motorizzate" },
                 { id: "opt_pedana_motor", label: "Poggiapiedi motorizzato", categoria: "motorizzate" },
@@ -281,73 +323,82 @@
                 { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Superior H4000": [
-                { id: "metri_guida", label: "Metri guida", categoria: "input", tipo: "number", step: "0.1", placeholder: "7.5" },
-                { id: "curve_90_qty", label: "Curve a 90°", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "punti_ricarica_qty", label: "Punti ricarica aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "metri_esterni", label: "Metri guida esterni", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
-                { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "radiocomandi_qty", label: "Radiocomandi aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "metri_guida", label: "Metri guida", categoria: "input", tipo: "number", step: "0.1", placeholder: "6.7" },
+                { id: "opt_sedile_style", label: "Sedile Style (incluso)", categoria: "seduta", preselezionato: true, bloccato: true },
                 { id: "opt_sedile_perch", label: "Sedile Smart Perch", categoria: "seduta" },
-                { id: "opt_sedile_esterni", label: "Sedile versione esterna", categoria: "seduta" },
-                { id: "opt_sedile_style", label: "Sedile Style", categoria: "seduta" },
+                { id: "opt_sedile_esterni", label: "Sedile SMART (versione esterna)", categoria: "seduta" },
                 { id: "opt_bracciolo_corto", label: "Bracciolo corto", categoria: "seduta" },
-                { id: "opt_distanziale_singolo", label: "Distanziale singolo", categoria: "seduta" },
-                { id: "opt_distanziale_doppio", label: "Distanziale doppio", categoria: "seduta" },
-                { id: "opt_cintura_velcro", label: "Cintura Velcro XXL", categoria: "seduta" },
+                { id: "opt_distanziale_singolo", label: "Distanziale singolo (+56mm)", categoria: "seduta" },
+                { id: "opt_distanziale_doppio", label: "Distanziale doppio (+102mm)", categoria: "seduta" },
+                { id: "opt_seggiolino_fisso", label: "Seggiolino fisso (standard per Smart Perch)", categoria: "seduta" },
+                { id: "opt_cintura_velcro", label: "Cintura in Velcro", categoria: "seduta" },
+                { id: "opt_cintura_velcro_xxl", label: "Cintura Velcro XXL", categoria: "seduta" },
                 { id: "opt_body_harness", label: "Body harness", categoria: "seduta" },
+                { id: "curve_90_qty", label: "Curve aggiuntive a 90°", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "opt_overrun", label: "Overrun", categoria: "guida" },
                 { id: "opt_dropnose", label: "Dropnose", categoria: "guida" },
                 { id: "opt_guida_ribaltabile_motor", label: "Guida ribaltabile motorizzata", categoria: "guida" },
-                { id: "opt_heavy_duty_160", label: "Heavy duty 160 kg", categoria: "guida" },
+                { id: "opt_heavy_duty_160", label: "Heavy duty kit 160 kg", categoria: "guida" },
+                { id: "punti_ricarica_qty", label: "Punti ricarica aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_conversion_kit", label: "Conversion Kit", categoria: "guida" },
                 { id: "opt_tappeti", label: "Tappeti", categoria: "guida" },
                 { id: "opt_colore_speciale", label: "Colore speciale RAL", categoria: "guida" },
-                { id: "opt_versione_esterni", label: "Versione esterni", categoria: "guida" },
-                { id: "opt_piastre_muro", label: "Piastre muro", categoria: "guida" },
-                { id: "opt_conversion_kit", label: "Conversion Kit", categoria: "guida" },
+                { id: "metri_esterni", label: "Metri guida esterni (supplemento)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "opt_versione_esterni", label: "Versione per esterni", categoria: "guida" },
+                { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_piastre_muro", label: "Piastre attacco a muro", categoria: "guida" },
+                { id: "opt_solo_guida", label: "Solo guida/supplemento rework", categoria: "guida" },
                 { id: "opt_rotazione_auto", label: "Rotazione automatica", categoria: "motorizzate" },
                 { id: "opt_pedana_motor", label: "Poggiapiedi motorizzato", categoria: "motorizzate" },
                 { id: "opt_motor_completo", label: "Motorizzato completo", categoria: "motorizzate" },
-                { id: "opt_one_touch", label: "One Touch Alert", categoria: "motorizzate" }
+                { id: "radiocomandi_qty", label: "Radiocomandi aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_one_touch", label: "One Touch Alert", categoria: "motorizzate" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Facile Graziosa Freecurve": [
-                { id: "metri_guida", label: "Metri guida", categoria: "input", tipo: "number", step: "0.1", placeholder: "7.5" },
-                { id: "curve_90_qty", label: "Curve a 90°", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "punti_ricarica_qty", label: "Punti ricarica", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "attacchi_muro_qty", label: "Attacchi muro", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "radiocomandi_qty", label: "Radiocomandi", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "opt_elegance_seat", label: "Elegance seat", categoria: "seduta" },
+                { id: "metri_guida", label: "Metri guida", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "opt_elegance_seat", label: "Elegance seat (incluso)", categoria: "seduta", preselezionato: true, bloccato: true },
                 { id: "opt_alliance_seat", label: "Alliance seat", categoria: "seduta" },
-                { id: "opt_active_seat", label: "Active seat", categoria: "seduta" },
+                { id: "opt_active_seat", label: "Active seat (solo Elegance/Alliance)", categoria: "seduta" },
                 { id: "opt_body_harness_4p", label: "Body harness 4-punti", categoria: "seduta" },
+                { id: "curve_90_qty", label: "Curve aggiuntive a 90°", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "opt_guida_ribaltabile_motor", label: "Guida ribaltabile motorizzata", categoria: "guida" },
+                { id: "punti_ricarica_qty", label: "Punti ricarica aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "attacchi_muro_qty", label: "Attacchi a muro aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "opt_colore_speciale", label: "Colore speciale RAL", categoria: "guida" },
-                { id: "opt_solo_guida", label: "Solo guida/rework", categoria: "guida" },
+                { id: "opt_solo_guida", label: "Solo guida/supplemento rework", categoria: "guida" },
                 { id: "opt_rotazione_auto", label: "Rotazione automatica", categoria: "motorizzate" },
                 { id: "opt_rotazione_2dir", label: "Rotazione 2-direzioni", categoria: "motorizzate" },
-                { id: "opt_pedana_illuminato", label: "Poggiapiedi illuminato", categoria: "motorizzate" },
-                { id: "opt_batteria_extra", label: "Batteria Extra 12Ah", categoria: "motorizzate" },
-                { id: "opt_batteria_ultra", label: "Batteria Ultra 20Ah", categoria: "motorizzate" },
-                { id: "opt_kit_ripetitore", label: "Kit Ripetitore", categoria: "motorizzate" }
+                { id: "opt_pedana_illuminato", label: "Poggiapiedi illuminato e motorizzato", categoria: "motorizzate" },
+                { id: "radiocomandi_qty", label: "Radiocomandi aggiuntivi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_batteria_extra", label: "Batteria Extra Power 12Ah (oltre 15m)", categoria: "speciali" },
+                { id: "opt_batteria_ultra", label: "Batteria Ultra Power 20Ah litio (oltre 20m)", categoria: "speciali" },
+                { id: "opt_kit_ripetitore", label: "Kit Ripetitore", categoria: "speciali" },
+                { id: "radiocomandi_ripetitore_qty", label: "Radiocomandi per ripetitore", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             "Infinity Curvilineo Bespoke": [
-                { id: "metri_guida", label: "Metri guida (oltre 5m)", categoria: "input", tipo: "number", step: "0.1", placeholder: "3" },
-                { id: "metri_guida_hd", label: "Metri guida HD", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
-                { id: "curve_90_qty", label: "Curve 90°", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "curve_180_qty", label: "Curve 180°", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_hd_completo", label: "Opzione Heavy Duty completa (da 125kg)", categoria: "base" },
+                { id: "opt_motore_hd", label: "Solo Motore HD (girevole manuale)", categoria: "base" },
+                { id: "opt_seduta_regolabile", label: "Seduta regolabile (estensione 100mm)", categoria: "seduta" },
+                { id: "opt_binario_hd", label: "Solo Binario HD 5m + 1 curva 90°", categoria: "base" },
+                { id: "opt_sedile_motor", label: "Sedile girevole motorizzato", categoria: "seduta" },
+                { id: "opt_dual_control", label: "Dual-Control Kit", categoria: "seduta" },
+                { id: "metri_guida", label: "Metri aggiuntivi (oltre 5m)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "metri_guida_hd", label: "Metri aggiuntivi HD (oltre 5m)", categoria: "input", tipo: "number", step: "0.1", placeholder: "0" },
+                { id: "curve_90_qty", label: "Curve 90° aggiuntive", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "curve_180_qty", label: "Curve 180° aggiuntive", categoria: "input", tipo: "number", placeholder: "0" },
                 { id: "curve_speciali_qty", label: "Curve speciali", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "punti_ricarica_qty", label: "Punti ricarica", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "telecomandi_qty", label: "Telecomandi", categoria: "input", tipo: "number", placeholder: "0" },
-                { id: "opt_motor_hd", label: "Motore HD", categoria: "seduta" },
-                { id: "opt_seduta_regolabile", label: "Seduta regolabile", categoria: "seduta" },
-                { id: "opt_coprigambe", label: "Coprigambe", categoria: "seduta" },
-                { id: "opt_sedile_motor", label: "Sedile motorizzato", categoria: "motorizzate" },
-                { id: "opt_dual_control", label: "Dual-Control Kit", categoria: "motorizzate" },
                 { id: "opt_partenza_drop", label: "Partenza Drop", categoria: "guida" },
                 { id: "opt_arrivo_orizzontale", label: "Arrivo orizzontale", categoria: "guida" },
-                { id: "opt_fissaggio_muro", label: "Fissaggio muro", categoria: "guida" },
-                { id: "opt_colore_nero", label: "Colore nero", categoria: "guida" },
-                { id: "opt_colore_marrone", label: "Colore marrone", categoria: "guida" }
+                { id: "fermate_intermedie_qty", label: "Fermate intermedie", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "punti_ricarica_qty", label: "Punti di ricarica", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "telecomandi_qty", label: "Telecomandi", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "coprigambe_qty", label: "Coprigambe", categoria: "input", tipo: "number", placeholder: "0" },
+                { id: "opt_fissaggio_muro", label: "Fissaggio a muro", categoria: "guida" },
+                { id: "opt_colore_nero", label: "Colore binario nero", categoria: "guida" },
+                { id: "opt_colore_marrone", label: "Colore binario marrone", categoria: "guida" },
+                { id: "opt_smontaggio", label: "Smontaggio impianto preesistente", categoria: "servizi" }
             ],
             // PEDANE - COMPLETE
             "Facile Step SRC": [
@@ -498,7 +549,8 @@
             input: "Misure e Quantità", guida: "Opzioni Guida", seduta: "Opzioni Seduta", motorizzate: "Opzioni Motorizzate",
             servizi: "Servizi", accessori: "Accessori", piattaforma: "Dimensioni Piattaforma", fissaggio: "Fissaggio",
             lavorazioni: "Lavorazioni e Finiture", partenza: "Configurazione Partenza", arrivo: "Configurazione Arrivo",
-            traino: "Gruppo di Traino", batterie: "Batterie"
+            traino: "Gruppo di Traino", batterie: "Batterie", heavyduty: "Opzioni Heavy Duty", speciali: "Opzioni Speciali",
+            base: "Configurazione Base"
         };
 
         function calcolaTotale() {
@@ -513,10 +565,14 @@
             const prezzi = prezziModelli[modelloSel.value];
             if (!prezzi) return;
 
-            let totale = prezzi.base || 0;
+            // Base + Montaggio + Trasporto + Imballo (sempre inclusi)
+            let totale = (prezzi.base || 0) + (prezzi.montaggio || 0) + (prezzi.trasporto || 0) + (prezzi.imballo || 0);
+            
+            // Aggiungi opzioni checkbox (incluse quelle disabilitate ma checked)
             document.querySelectorAll('#opzioniContainer input[type="checkbox"]:checked').forEach(cb => {
                 if (prezzi[cb.id]) totale += prezzi[cb.id];
             });
+            // Aggiungi opzioni numeriche
             document.querySelectorAll('#opzioniContainer input[type="number"]').forEach(inp => {
                 const qty = parseFloat(inp.value) || 0;
                 if (qty > 0 && prezzi[inp.name]) totale += prezzi[inp.name] * qty;
@@ -566,7 +622,14 @@
                     categorie[catId].forEach(opt => {
                         const item = document.createElement("div");
                         item.className = "checkbox-option";
-                        item.innerHTML = '<input type="checkbox" id="' + opt.id + '" name="' + opt.id + '" class="calc-trigger"><label for="' + opt.id + '"><span class="checkbox-icon"></span>' + opt.label + '</label>';
+                        
+                        // Gestione preselezionato e bloccato
+                        const checkedAttr = opt.preselezionato ? ' checked' : '';
+                        const disabledAttr = opt.bloccato ? ' disabled' : '';
+                        const lockedStyle = opt.bloccato ? ' style="opacity:0.7; cursor:not-allowed;"' : '';
+                        const lockedClass = opt.bloccato ? ' locked' : '';
+                        
+                        item.innerHTML = '<input type="checkbox" id="' + opt.id + '" name="' + opt.id + '" class="calc-trigger' + lockedClass + '"' + checkedAttr + disabledAttr + '><label for="' + opt.id + '"' + lockedStyle + '><span class="checkbox-icon"></span>' + opt.label + '</label>';
                         group.appendChild(item);
                     });
                     div.appendChild(group);
@@ -592,6 +655,7 @@
             opzioniSalvate.opzioniCheckbox = [];
             opzioniSalvate.opzioniNumeriche = [];
 
+            // Include anche checkbox disabilitati ma checked
             document.querySelectorAll('#opzioniContainer input[type="checkbox"]:checked').forEach(cb => {
                 const def = definizioni.find(d => d.id === cb.id);
                 if (def) opzioniSalvate.opzioniCheckbox.push({ label: def.label, prezzo: prezzi[cb.id] || 0 });
